@@ -14,18 +14,19 @@ git clone https://github.com/vr513/PR-2-Job-Portal
 
 2. Install the dependencies:
 
-cd job-portal-server
-pnpm install
+`cd server`
+`pnpm install`
 
 3. Create a `.env.local` file and add the following environment variables:
 
-PORT=5050
-MONGO_URI="mongodb://127.0.0.1:27017/job-portal"
-JWT_SECRET="68SfzICFJSmlOBZik2i7"
+`PORT=5050`
+`MONGO_URI="mongodb://127.0.0.1:27017/job-portal"`
+`JWT_SECRET="68SfzICFJSmlOBZik2i7"`
 
 4. Start the server:
 
-npm run dev
+`cd server`
+`pnpm run dev`
 
 
 The server will start running on `http://localhost:5050`.
