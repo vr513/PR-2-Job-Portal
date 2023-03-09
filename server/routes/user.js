@@ -10,13 +10,9 @@ router.post("/register", signup, (req, res) => {});
 router.post("/signin", signin, (req, res) => {});
 
 router.post("/refreshToken", verifyToken, (req, res) => {
-  const token = jwt.sign(
-    { id: req.user.id },
-    process.env.PASSWORD_PRIVATE_KEY,
-    {
-      expiresIn: "5d",
-    }
-  );
+  const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
+    expiresIn: "5d",
+  });
   res.status(200).send({
     accessToken: token,
   });

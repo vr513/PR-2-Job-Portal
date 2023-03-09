@@ -8,7 +8,7 @@ const userRoutes = require('./routes/user');
 
 require("dotenv").config();
 
-mongoose.connect(process.env.MONGO_URL, {
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -32,5 +32,5 @@ app.use(userRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log("Listening on PORT" + PORT);
+  console.log("Listening on PORT " + PORT);
 });

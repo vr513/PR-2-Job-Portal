@@ -11,12 +11,12 @@ const verifyToken = async (req, res, next) => {
     let token = req.headers.authorization.split(" ")[1];
     let expired = false;
     try {
-      const decode = jwt.verify(token, process.env.PASSWORD_PRIVATE_KEY);
-      const user = await User.findOne({_id : decode.id});
-      if(user === null){
-        res.status(401).send({ err : "Invalid authentication token" });
+      const decode = jwt.verify(token, process.env.JWT_SECRET);
+      const user = await User.findOne({ _id: decode.id });
+      if (user === null) {
+        res.status(401).send({ err: "Invalid authentication token" });
         return;
-      }else{
+      } else {
         req.user = user;
         next();
       }
@@ -24,9 +24,9 @@ const verifyToken = async (req, res, next) => {
       console.log(err);
       res.status(401).send({ err: err });
     }
-  }else{
+  } else {
     req.user = undefined;
-    res.status(400).send({err : 'JWT Token is required'})
+    res.status(400).send({ err: "JWT Token is required" });
   }
 };
 

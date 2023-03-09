@@ -39,11 +39,9 @@ exports.signin = async (req, res) => {
         });
         return;
       } else {
-        const token = jwt.sign(
-          { id: user.id },
-          process.env.PASSWORD_PRIVATE_KEY,
-          { expiresIn: "5d" }
-        );
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+          expiresIn: "5d",
+        });
         res.status(200).send({
           user: {
             id: user._id,
