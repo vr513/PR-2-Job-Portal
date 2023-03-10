@@ -43,8 +43,8 @@ In the project directory, you can run:
 
 The server provides the following APIs:
 
-- `POST /register`: Registers a new user.
-- `POST /signin`: Logs in a user.
+- `POST /signup`: Registers a new user.
+- `POST /login`: Logs in a user.
 - `POST /refreshToken`: Refresh the JWT authentication token.
 <!-- - `GET /api/jobs`: Returns a list of jobs.
 - `POST /api/jobs`: Creates a new job.
