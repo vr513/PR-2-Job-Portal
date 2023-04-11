@@ -25,3 +25,11 @@ exports.employerCheck = async(req,res,next) => {
         res.status(401).send({err : "Unauthorized request"});
     }
 }
+
+exports.applicantCheck = async(req,res,next) => {
+    if(req.user.role === "applicant"){
+        next();
+    }else{
+        res.status(401).send({err : "Unauthorized request"});
+    }
+}

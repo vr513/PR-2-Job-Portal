@@ -15,8 +15,8 @@ exports.createNewJob = async (req, res) => {
       active: true,
       jobDescription: req.body.jobDescription,
     });
-    const response1 = job.save();
-    const response2 = Employer.findOneAndUpdate(
+    const response1 = await job.save();
+    const response2 = await Employer.findOneAndUpdate(
       { userId: req.user._id },
       { $push : { allJobs: job._id } },
     ).exec();
@@ -27,3 +27,16 @@ exports.createNewJob = async (req, res) => {
     res.status(500).send({ err });
   }
 };
+
+
+exports.updateJobStatus = async(req,res) => {
+  try{
+    const response1 = await Job.updateOne(
+      { companyId: req.user.id, _id: req.body.targetJobId },
+      { active : req.body.jobActiveStatus }
+    ).exec();
+    res.send({response1});
+  }catch(err){
+    res.status(500).send({ err });
+  }
+}
