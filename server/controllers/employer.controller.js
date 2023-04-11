@@ -15,6 +15,7 @@ exports.saveEmployerDetails = async (req, res) => {
       message: "Employer Registered successfully",
     });
   } catch (err) {
+    console.error(err);
     res.status(500).send({ err });
   }
 };

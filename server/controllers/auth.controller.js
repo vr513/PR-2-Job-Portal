@@ -16,7 +16,7 @@ exports.signup = async (req, res) => {
       message: "User Registered successfully",
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(400).send({ err: "Incomplete fields detected" });
   }
 };
@@ -54,7 +54,7 @@ exports.signin = async (req, res) => {
       }
     }
   } catch (err) {
-    console.log(err);
-    res.status(400).send({ err });
+    console.error(err);
+    res.status(500).send({ err });
   }
 };

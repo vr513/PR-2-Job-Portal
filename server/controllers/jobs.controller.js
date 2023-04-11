@@ -36,7 +36,8 @@ exports.updateJobStatus = async(req,res) => {
       { active : req.body.jobActiveStatus }
     ).exec();
     res.send({response1});
-  }catch(err){
+  }catch (err) {
+    console.error(err);
     res.status(500).send({ err });
   }
 }
