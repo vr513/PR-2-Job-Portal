@@ -204,7 +204,7 @@ export default function SignUp(props) {
                     borderRadius="8px"
                     _hover={{bg:"green.700"}}
 
-                >Sign Up</Button>
+                >Sign Up .</Button>
             </Box>
         </Box>
 
