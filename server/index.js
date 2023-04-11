@@ -5,6 +5,9 @@ const morgan = require("morgan");
 const cors = require("cors");
 
 const userRoutes = require('./routes/user');
+const adminRoutes = require('./routes/admin');
+const employerRoutes = require('./routes/employer');
+const applicantRoutes = require("./routes/applicant");
 
 require("dotenv").config();
 
@@ -29,6 +32,9 @@ app.use(
     })
 );
 app.use(userRoutes);
+app.use(adminRoutes);
+app.use(employerRoutes);
+app.use(applicantRoutes);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
