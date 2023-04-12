@@ -88,10 +88,7 @@ const applicantSchema = new Schema({
   employmentHistory: {
     type: [
       {
-        companyId :{
-          type : Schema.Types.ObjectId
-        },
-        compnayName: {
+        companyName: {
           type: String,
           required: [true, "Company Name not provided"],
         },

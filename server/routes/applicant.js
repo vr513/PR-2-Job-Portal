@@ -14,6 +14,10 @@ const {
   updateKeySkills,
   addNewEmployment,
   updateEmployment,
+  removeEmployment,
+  addNewEducation,
+  updateEducation,
+  removeEducation,
 } = require("../controllers/applicant.controller");
 
 router.post("/create-applicant", verifyToken, applicantCheck, createApplicant);
@@ -54,5 +58,29 @@ router.post(
   verifyToken,
   applicantCheck,
   updateEmployment
+);
+router.post(
+  "/remove-employment-history",
+  verifyToken,
+  applicantCheck,
+  removeEmployment
+);
+router.post(
+  "/add-education",
+  verifyToken,
+  applicantCheck,
+  addNewEducation
+);
+router.post(
+  "/update-education",
+  verifyToken,
+  applicantCheck,
+  updateEducation
+);
+router.post(
+  "/remove-education",
+  verifyToken,
+  applicantCheck,
+  removeEducation
 );
 module.exports = router;
