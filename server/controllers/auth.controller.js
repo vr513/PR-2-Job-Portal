@@ -11,6 +11,7 @@ exports.signup = async (req, res) => {
       role: req.body.role,
       password: bcrypt.hashSync(req.body.password, 8),
     });
+    user.referentialId = user._id;
     const response = await user.save();
     res.status(200).send({
       message: "User Registered successfully",

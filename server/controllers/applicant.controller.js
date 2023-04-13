@@ -1,5 +1,5 @@
-const { default: mongoose } = require("mongoose");
 const Applicant = require("../models/applicant");
+const User = require("../models/user");
 
 exports.createApplicant = async (req, res) => {
   try {
@@ -15,10 +15,12 @@ exports.createApplicant = async (req, res) => {
       ...(req.body.alternateEmail && {
         alternateEmail: req.body.alternateEmail,
       }),
-      currentLocation: req.body.currentLocation,
     });
     const response1 = await applicant.save();
-    if (!response1) {
+    const response = await User.findByIdAndUpdate(req.user._id, {
+      referentialId: applicant._id,
+    }).exec();
+    if (!response1 || !response) {
       return res.status(404).send({ msg: "Invalid Arguments" });
     }
     return res.send({ msg: "Applicant registered successfully" });

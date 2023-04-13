@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const employerSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
-    ref: "users",
+    ref: "User",
     unique: [true, "index key already exists in database!"],
     index : true
   },
@@ -36,7 +36,7 @@ const employerSchema = new Schema({
   },
   allJobs: {
     type: [Schema.Types.ObjectId],
-    ref: "jobs",
+    ref: "Job",
     default: [],
   },
 });

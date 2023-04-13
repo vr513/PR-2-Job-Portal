@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const applicantSchema = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
-    ref: "users",
+    ref: "User",
     unique: [true, "index key already exists in database!"],
     index: true,
   },

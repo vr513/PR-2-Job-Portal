@@ -12,7 +12,7 @@ const jobsSchema = new Schema({
   },
   companyId : {
     type : Schema.Types.ObjectId,
-    ref : 'employers',
+    ref : 'User',
     required : true,
   },
   workExperience: {
@@ -42,6 +42,11 @@ const jobsSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  applicants: {
+    type : [Schema.Types.ObjectId],
+    ref: "Applicant",
+    default : []
+  }
 });
 
 module.exports = mongoose.model('Job',jobsSchema);
