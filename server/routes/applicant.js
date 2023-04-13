@@ -19,7 +19,7 @@ const {
   updateEducation,
   removeEducation,
 } = require("../controllers/applicant.controller");
-const { applyToJob } = require("../controllers/jobs.controller");
+const { applyToJob, getJobs } = require("../controllers/jobs.controller");
 
 router.post("/create-applicant", verifyToken, applicantCheck, createApplicant);
 router.post(
@@ -90,4 +90,5 @@ router.post(
   applicantCheck,
   applyToJob
 )
+router.get('/jobs',verifyToken,applicantCheck,getJobs);
 module.exports = router;

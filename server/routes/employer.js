@@ -9,7 +9,7 @@ const {createNewJob , updateJobStatus, viewJobApplications} = require('../contro
 
 router.post('/save-employer-details',verifyToken,employerCheck,saveEmployerDetails);
 
-router.post('/create-new-job',verifyToken,verifiedEmployerCheck,createNewJob);
+router.post('/jobs/new',verifyToken,verifiedEmployerCheck,createNewJob);
 
 router.post('/update-job-status',verifyToken,verifiedEmployerCheck,updateJobStatus);
 

@@ -228,6 +228,24 @@ const applicantSchema = new Schema({
     ],
     default : []
   },
+  minSalary : {
+    type : Number,
+    required : [true , "Expected Salary not mentioned"]
+  }
+},{toJSON : {virtuals : true}});
+
+applicantSchema.virtual('totalWorkExperience').get(function() {
+  let totalExperience = 0;
+  this.employmentHistory.forEach(job => {
+    const fromDate = new Date(job.fromDate);
+    const toDate = job.isCurrentJob ? new Date() : new Date(job.toDate);
+    const years = toDate.getFullYear() - fromDate.getFullYear();
+    const months = toDate.getMonth() - fromDate.getMonth();
+    const days = toDate.getDate() - fromDate.getDate();
+    const experienceInYears = years + (months / 12) + (days / 365);
+    totalExperience += experienceInYears;
+  });
+  return totalExperience.toFixed(2);
 });
 
 module.exports = mongoose.model("Applicant", applicantSchema);

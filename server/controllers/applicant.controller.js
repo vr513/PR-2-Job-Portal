@@ -11,6 +11,7 @@ exports.createApplicant = async (req, res) => {
       address: req.body.address,
       contactNumber: req.body.contactNumber,
       email: req.user.email,
+      minSalary:req.body.minSalary,
       currentLocation: req.body.currentLocation,
       ...(req.body.alternateEmail && {
         alternateEmail: req.body.alternateEmail,
@@ -280,3 +281,13 @@ exports.removeEducation = async (req, res) => {
     res.status(500).send({ err });
   }
 };
+
+exports.updateSalaryExpectations = async(req,res) => {
+  try{
+    const response = await Applicant.findByIdAndUpdate(req.user.referentialId,{minSalary : req.body.minSalary}).exec();
+    return res.status(200).send({msg : "Salary expectations updated successfully"})
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}
