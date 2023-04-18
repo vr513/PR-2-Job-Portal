@@ -291,3 +291,15 @@ exports.updateSalaryExpectations = async(req,res) => {
     res.status(500).send({ err });
   }
 }
+
+exports.getApplicantData = async(req,res) => {
+  try{
+    if(req.user.referentialId.equals(req.params.id)) return res.status(401).send({err : "Unauthorised Access"});
+    const response = await Applicant.findById(req.params.id);
+    if(!response) return res.status(400).send({err : "User not found"});
+    return res.status(200).send({userData : response});
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}

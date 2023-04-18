@@ -18,10 +18,12 @@ const {
   addNewEducation,
   updateEducation,
   removeEducation,
+  getApplicantData,
 } = require("../controllers/applicant.controller");
 const { applyToJob, getJobs } = require("../controllers/jobs.controller");
 
 router.post("/create-applicant", verifyToken, applicantCheck, createApplicant);
+router.get("/get-applicant-data/:id",verifyToken,applicantCheck,getApplicantData);
 router.post(
   "/update-location-preferences",
   verifyToken,
