@@ -9,7 +9,7 @@ router.post("/signup", signup, (req, res) => {});
 
 router.post("/login", signin, (req, res) => {});
 
-router.post("/refreshToken", verifyToken, (req, res) => {
+router.get("/refresh-token", verifyToken, (req, res) => {
   const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, {
     expiresIn: "5d",
   });

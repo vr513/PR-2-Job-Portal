@@ -7,6 +7,7 @@ import {
   VStack,
   HStack,
   Icon,
+  Button,
   Img,
 } from "@chakra-ui/react";
 import Login from "../components/auth/Login";
@@ -44,11 +45,65 @@ export default function auth() {
           width="40%"
           height="80vh"
         >
-          {currentForm === "signIn" ? (
-            <Login onFormSwitch={toggleForm} />
-          ) : (
-            <SignUp onFormSwitch={toggleForm} FormState={currentForm} />
-          )}
+          <Container h={"80vh"}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              bg="white"
+              borderRadius="22px"
+              gap="1rem"
+              padding="40px"
+              outline="0"
+            >
+              <Box
+                as="div"
+                display="flex"
+                width="45%"
+                justifyContent="space-evenly"
+                borderRadius="32px"
+                gap={"10px"}
+              >
+                <Button
+                  backgroundColor={
+                    currentForm === "signIn" ? "#000" : "#E1EDEC"
+                  }
+                  borderRadius="32px"
+                  fontFamily="Poppins"
+                  fontSize="0.9rem"
+                  fontWeight="400"
+                  lineHeight="18px"
+                  height="30px"
+                  color={currentForm === "signIn" ? "#fff" : "#000"}
+                  onClick={() => toggleForm("signIn")}
+                  _hover={{}}
+                >
+                  sign in
+                </Button>
+                <Button
+                  backgroundColor={
+                    currentForm === "signUp" ? "#000" : "#E1EDEC"
+                  }
+                  borderRadius="32px"
+                  fontFamily="Poppins"
+                  fontSize="0.9rem"
+                  fontWeight="400"
+                  lineHeight="18px"
+                  height="30px"
+                  color={currentForm === "signUp" ? "#fff" : "#000"}
+                  onClick={() => toggleForm("signUp")}
+                  _hover={{}}
+                >
+                  sign up
+                </Button>
+              </Box>
+              {currentForm === "signIn" ? (
+                <Login toggleForm={toggleForm} />
+              ) : (
+                <SignUp toggleForm={toggleForm} currentForm={currentForm} />
+              )}
+            </Box>
+          </Container>
         </Box>
       </HStack>
     </Box>
