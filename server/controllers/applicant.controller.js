@@ -1,5 +1,5 @@
-const { default: mongoose } = require("mongoose");
 const Applicant = require("../models/applicant");
+const User = require("../models/user");
 
 exports.createApplicant = async (req, res) => {
   try {
@@ -11,14 +11,17 @@ exports.createApplicant = async (req, res) => {
       address: req.body.address,
       contactNumber: req.body.contactNumber,
       email: req.user.email,
+      minSalary:req.body.minSalary,
       currentLocation: req.body.currentLocation,
       ...(req.body.alternateEmail && {
         alternateEmail: req.body.alternateEmail,
       }),
-      currentLocation: req.body.currentLocation,
     });
     const response1 = await applicant.save();
-    if (!response1) {
+    const response = await User.findByIdAndUpdate(req.user._id, {
+      referentialId: applicant._id,
+    }).exec();
+    if (!response1 || !response) {
       return res.status(404).send({ msg: "Invalid Arguments" });
     }
     return res.send({ msg: "Applicant registered successfully" });
@@ -278,3 +281,25 @@ exports.removeEducation = async (req, res) => {
     res.status(500).send({ err });
   }
 };
+
+exports.updateSalaryExpectations = async(req,res) => {
+  try{
+    const response = await Applicant.findByIdAndUpdate(req.user.referentialId,{minSalary : req.body.minSalary}).exec();
+    return res.status(200).send({msg : "Salary expectations updated successfully"})
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}
+
+exports.getApplicantData = async(req,res) => {
+  try{
+    if(req.user.referentialId.equals(req.params.id)) return res.status(401).send({err : "Unauthorised Access"});
+    const response = await Applicant.findById(req.params.id);
+    if(!response) return res.status(400).send({err : "User not found"});
+    return res.status(200).send({userData : response});
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}

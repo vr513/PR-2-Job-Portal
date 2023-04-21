@@ -12,18 +12,11 @@ const jobsSchema = new Schema({
   },
   companyId : {
     type : Schema.Types.ObjectId,
-    ref : 'employers',
+    ref : 'User',
     required : true,
   },
-  workExperience: {
-    minExp: {
-      type: Number,
-      required: true,
-    },
-    maxExp: {
-      type: Number,
-      required: true,
-    },
+  minWorkExperience : {
+    type : Number
   },
   jobLocations: {
     type: [String],
@@ -42,6 +35,15 @@ const jobsSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  applicants: {
+    type : [Schema.Types.ObjectId],
+    ref: "Applicant",
+    default : []
+  },
+  salary : {
+    type : Number,
+    required : [true ,"Approximate Salary is required"]
+  }
 });
 
 module.exports = mongoose.model('Job',jobsSchema);
