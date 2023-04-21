@@ -8,6 +8,7 @@ const AuthProvider = ({ children }) => {
   const [token , setToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [role , setRole] = useState(null)
   const [loading, setLoading] = useState(true);
 
   const Login = async (targetEmail, targetPassword) => {
@@ -18,14 +19,10 @@ const AuthProvider = ({ children }) => {
         password: targetPassword,
       });
       if (res.status === 200) {
-        localStorage.setItem("token", res.data.accessToken);
         setToken(res.data.accessToken);
         setCurrentUser(res.data.userData);
-        localStorage.setItem(
-          "user",
-          JSON.stringify(res.data.userData)
-        );
         setIsLoggedIn(true);
+        setRole(res.data.userRole);
         return res;
       } else return res;
     } catch (err) {
@@ -33,12 +30,14 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const Signup = async (targetEmail, targetPassword) => {
+  const Signup = async (targetEmail, targetPassword, targetName , targetRole) => {
     let res;
     try {
       res = await axios.post("/signup", {
         email: targetEmail,
         password: targetPassword,
+        name : targetName,
+        role : targetRole
       });
       if (res.status === 201) return res;
     } catch (err) {
@@ -51,38 +50,18 @@ const AuthProvider = ({ children }) => {
     setCurrentUser(null);
     setIsLoggedIn(false);
     setUserData(null);
-    token = null;
-    localStorage.setItem("user", null);
+    setRole(null);
     return true;
   };
 
-  const RefreshData = async () => {
-    const localToken = localStorage.getItem("token");
-    const config = {
-      headers: {
-        Authorization: "JWT " + localToken,
-      },
-    };
-    const response2 = await axios.get("/info", config);
-    console.log(response2.data);
-    setUserData(response2.data.user);
-    localStorage.setItem("userData", JSON.stringify(response2.data.user));
-    localStorage.setItem("registered", "1");
-    setRegistered(true);
-  };
-
   const value = {
-    currentUser,
-    Login,
-    isLoggedIn,
-    Logout,
-    Signup,
-    userData,
-    token,
-    registered,
-    RefreshData,
-    RefreshMatches,
-    matchesData,
+   token,
+   isLoggedIn,
+   currentUser,
+   role,
+   Login,
+   Logout,
+   Signup
   };
 
   useEffect(() => {
