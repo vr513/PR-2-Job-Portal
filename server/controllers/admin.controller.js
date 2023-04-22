@@ -8,6 +8,7 @@ exports.findPendingVerificationRequests = async (req, res) => {
     ).exec();
     res.status(200).send({ results });
   } catch (err) {
+    console.error(err);
     res.status(500).send({ err });
   }
 };
@@ -20,6 +21,7 @@ exports.getAllEmployers = async (req, res) => {
     ).exec();
     res.status(200).send({ results });
   } catch (err) {
+    console.error(err);
     res.status(500).send({ err });
   }
 };
@@ -29,9 +31,10 @@ exports.blockUser = async (req, res) => {
     const result = await User.findOneAndUpdate(
       { _id: req.body.targetUser },
       { verified: false }
-    );
+    ).exec();
     res.status(200).send({ msg: "Success" });
   } catch (err) {
+    console.error(err);
     res.status(500).send({ err });
   }
 };
@@ -41,9 +44,10 @@ exports.approveUser = async (req, res) => {
     const result = await User.findOneAndUpdate(
       { _id: req.body.targetUser },
       { verified: true }
-    );
+    ).exec();
     res.status(200).send({ msg: "Success" });
   } catch (err) {
+    console.error(err);
     res.status(500).send({ err });
   }
 };

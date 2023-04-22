@@ -36,6 +36,9 @@ const userSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  referentialId : {
+    type : Schema.Types.ObjectId
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);

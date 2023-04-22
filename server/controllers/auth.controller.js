@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const User = require("../models/user");
+const Applicant = require("../models/applicant");
+const Employer = require("../models/employer");
 
 exports.signup = async (req, res) => {
   try {
@@ -11,12 +13,13 @@ exports.signup = async (req, res) => {
       role: req.body.role,
       password: bcrypt.hashSync(req.body.password, 8),
     });
+    user.referentialId = user._id;
     const response = await user.save();
     res.status(200).send({
       message: "User Registered successfully",
     });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(400).send({ err: "Incomplete fields detected" });
   }
 };
@@ -42,19 +45,25 @@ exports.signin = async (req, res) => {
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
           expiresIn: "5d",
         });
-        res.status(200).send({
-          user: {
+        let response;
+        if(user.role === "applicant") response = await Applicant.findById(user.referentialId);
+        else if(user.role === "employer") response = await Employer.findById(user.referentialId);
+        else {
+          response = {
             id: user._id,
             email: user.email,
-            fullName: user.fullName,
-          },
+          }
+        }
+        res.status(200).send({
+          userData : response,
+          userRole : user.role,
           message: "Login successfull",
           accessToken: token,
         });
       }
     }
   } catch (err) {
-    console.log(err);
-    res.status(400).send({ err });
+    console.error(err);
+    res.status(500).send({ err });
   }
 };
