@@ -97,8 +97,6 @@ function Register() {
     },
   };
 
-
-
   return (
     <Flex>
       <Box bg="primary" width="100vw" height="100vh" fontFamily="poppins">
@@ -112,7 +110,12 @@ function Register() {
             <Heading fontFamily="poppins" fontSize="3rem" marginTop="2rem">
               COMMIT
             </Heading>
-            <Heading fontFamily="poppins" fontSize="1.5rem" marginTop="2rem" marginBottom="0.5rem">
+            <Heading
+              fontFamily="poppins"
+              fontSize="1.5rem"
+              marginTop="2rem"
+              marginBottom="0.5rem"
+            >
               Register
             </Heading>
             <Formik>
