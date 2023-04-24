@@ -7,6 +7,7 @@ import Register from "./screens/Register";
 import AdminDashboard from "./screens/AdminDashboard";
 import Home from "./screens/Home";
 import Jobs from "./screens/Jobs"
+import Profile from "./screens/Profile";
 function App() {
   return (
     <BrowserRouter>
@@ -16,6 +17,7 @@ function App() {
           <Route path ="/AdminDashboard" element ={<AdminDashboard />} />
           <Route path ="/Home" element = {<Home />} />
           <Route path ="/Jobs" element = {<Jobs />} />
+          <Route path ="/Profile" element = {<Profile />} />
       </Routes>
     </BrowserRouter>
   );
