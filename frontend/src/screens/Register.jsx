@@ -118,7 +118,7 @@ function Register() {
             >
               Register
             </Heading>
-            <Formik>
+            <>
               <Box
                 as="form"
                 onSubmit={formik.handleSubmit}
@@ -311,7 +311,7 @@ function Register() {
                   Register Now
                 </Button>
               </Box>
-            </Formik>
+            </>
           </Box>
 
           <Box

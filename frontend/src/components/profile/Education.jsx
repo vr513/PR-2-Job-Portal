@@ -18,20 +18,15 @@ import {
 import { Formik } from "formik";
 import React, { forwardRef } from "react";
 
-function ResumeHeadline({}, resumeHeadlineRef) {
+function Education({}, educationRef) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box
-      ref={resumeHeadlineRef}
-      width={"100%"}
-      bg={"white"}
-      borderRadius={"5px"}
-    >
+    <Box ref={educationRef} width={"100%"} bg={"white"} borderRadius={"5px"}>
       <Flex flexDir={"column"} gap={"0.5rem"} p={"1rem"}>
         <Flex alignItems={"center"} justifyContent={"space-between"}>
           <Text fontSize={"22px"} fontWeight="600">
-            Resume Headline
+            Education
           </Text>
           <Button
             onClick={onOpen}
@@ -39,13 +34,12 @@ function ResumeHeadline({}, resumeHeadlineRef) {
             color={"secondary"}
             fontSize={"16px"}
           >
-            ADD RESUME HEADLINE
+            ADD EDUCATION
           </Button>
         </Flex>
         <Text color={"#8F8F8F"}>
-          It is the first thing recruiters notice in your profile. Write
-          concisely what makes you unique and right person for the job you
-          looking for
+          Please mention your education details. You can add details about your
+          school, college and degree. This will increase your profile strength.
         </Text>
       </Flex>
 
@@ -53,14 +47,14 @@ function ResumeHeadline({}, resumeHeadlineRef) {
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>Add Resume Headline</ModalHeader>
+          <ModalHeader>Add Education Details</ModalHeader>
           <ModalCloseButton />
 
           <form>
             <ModalBody>
               <>
                 <FormControl>
-                  <FormLabel>Resume headline</FormLabel>
+                  <FormLabel>Add details</FormLabel>
                   <Input type="text" />
                 </FormControl>
               </>
@@ -81,4 +75,4 @@ function ResumeHeadline({}, resumeHeadlineRef) {
   );
 }
 
-export default forwardRef(ResumeHeadline);
+export default forwardRef(Education);

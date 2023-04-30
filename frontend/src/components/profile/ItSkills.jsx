@@ -17,21 +17,17 @@ import {
 } from "@chakra-ui/react";
 import { Formik } from "formik";
 import React, { forwardRef } from "react";
+import { ref } from "yup";
 
-function ResumeHeadline({}, resumeHeadlineRef) {
+function ItSkills({},itSkillsRef) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box
-      ref={resumeHeadlineRef}
-      width={"100%"}
-      bg={"white"}
-      borderRadius={"5px"}
-    >
+    <Box ref={itSkillsRef} width={"100%"} bg={"white"} borderRadius={"5px"}>
       <Flex flexDir={"column"} gap={"0.5rem"} p={"1rem"}>
         <Flex alignItems={"center"} justifyContent={"space-between"}>
           <Text fontSize={"22px"} fontWeight="600">
-            Resume Headline
+            IT Skills 
           </Text>
           <Button
             onClick={onOpen}
@@ -39,13 +35,13 @@ function ResumeHeadline({}, resumeHeadlineRef) {
             color={"secondary"}
             fontSize={"16px"}
           >
-            ADD RESUME HEADLINE
+            ADD DETAILS
           </Button>
         </Flex>
-        <Text color={"#8F8F8F"}>
-          It is the first thing recruiters notice in your profile. Write
-          concisely what makes you unique and right person for the job you
-          looking for
+        <Text  color={"#8F8F8F"}>
+          Specify details about programming languages (such as Java, Python,
+          C/C++, Oracle, SQL etc), softwares (Microsoft Word, Excel, Tally etc)
+          or any other software related knowledge.
         </Text>
       </Flex>
 
@@ -53,14 +49,15 @@ function ResumeHeadline({}, resumeHeadlineRef) {
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>Add Resume Headline</ModalHeader>
+          <ModalHeader>Add IT Skills</ModalHeader>
           <ModalCloseButton />
 
           <form>
             <ModalBody>
               <>
+                {" "}
                 <FormControl>
-                  <FormLabel>Resume headline</FormLabel>
+                  <FormLabel>SKills</FormLabel>
                   <Input type="text" />
                 </FormControl>
               </>
@@ -81,4 +78,4 @@ function ResumeHeadline({}, resumeHeadlineRef) {
   );
 }
 
-export default forwardRef(ResumeHeadline);
+export default forwardRef(ItSkills);

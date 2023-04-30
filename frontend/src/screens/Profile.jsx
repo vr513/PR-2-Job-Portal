@@ -10,7 +10,7 @@ import {
   Link,
   Input,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   MdOutlinePhone,
   MdOutlineLocationOn,
@@ -19,12 +19,59 @@ import {
   MdOutlineCalendarToday,
 } from "react-icons/md";
 import ResumeHeadline from "../components/profile/ResumeHeadline";
+import KeySkills from "../components/profile/KeySkills";
+import Employement from "../components/profile/Employment";
+import Education from "../components/profile/Education";
+import ItSkills from "../components/profile/ItSkills";
+import Projects from "../components/profile/Projects";
+import ProfileSummary from "../components/profile/ProfileSummary";
+import CarrerProfile from "../components/profile/CarrerProfile";
+import PersonalDetail from "../components/profile/PersonalDetails";
 
 function Profile() {
   const [resumeFile, setResumeFile] = useState(null);
   const handleResumeInput = (e) => {
     setResumeFile(e.target.files[0]);
   };
+
+  const itSkillsRef = useRef(null);
+  const resumeRef = useRef(null);
+  const resumeHeadlineRef = useRef(null);
+  const keySKillsRef = useRef(null);
+  const educationRef = useRef(null);
+  const projectsRef = useRef(null);
+  const profileSummaryRef = useRef(null);
+  const carrerProfileRef = useRef(null);
+  const personalDetailsRef = useRef(null);
+  const employmentRef = useRef(null);
+
+  const itSkillsRefScroll = () =>
+    itSkillsRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const resumeScroll = () =>
+    resumeRef.current.scrollIntoView({ behavior: "smooth" });
+  const resumeHeadlineRefScroll = () =>
+    resumeHeadlineRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const keySKillsRefScroll = () =>
+    keySKillsRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const educationRefScroll = () =>
+    educationRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const projectsRefScroll = () =>
+    projectsRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const profileSummaryRefScroll = () =>
+    profileSummaryRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const carrerProfileRefScroll = () =>
+    carrerProfileRef.current.scrollIntoView({ behavior: "smooth" });
+
+  const personalDetailsRefScroll = () =>
+    personalDetailsRef.current.scrollIntoView({ behavior: "smooth" });
+  const employmentRefScroll = () =>
+    employmentRef.current.scrollIntoView({ behavior: "smooth" });
 
   return (
     <Box display="flex" height="100vh" flexDir="column" bg="primary">
@@ -126,17 +173,156 @@ function Profile() {
 
       <Box mt={"33vh"} ml={"2rem"} mr={"2rem"} display={"flex"} gap={"2%"}>
         <Box
+          display={"flex"}
+          flexDir={"column"}
           width={"25vw"}
           p={"1rem"}
           borderRadius={"5px"}
           bg={"white"}
           height={"65vh"}
         >
-          <Text>quicks links</Text>
-          <Text>quicks links</Text>
-          <Text>quicks links</Text>
-        </Box>
+          <Text fontSize={"25px"} fontWeight={"600"}>
+            QUICK LINKS
+          </Text>
 
+          <Flex
+            alignSelf={"center"}
+            mt={"0.5rem"}
+            mb={"0.5rem"}
+            width={"100%"}
+            border={"1px"}
+            borderColor={"#DEDEDE"}
+          ></Flex>
+
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Upload Resume</Text>
+            <Button bg={"none"} color={"secondary"} onClick={resumeRef}>
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Resume Headline</Text>
+            <Button
+              bg={"none"}
+              color={"secondary"}
+              onClick={resumeHeadlineRefScroll}
+            >
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Key SKills</Text>
+            <Button
+              bg={"none"}
+              color={"secondary"}
+              onClick={keySKillsRefScroll}
+            >
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Employement</Text>
+            <Button
+              bg={"none"}
+              color={"secondary"}
+              onClick={employmentRefScroll}
+            >
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Education</Text>
+            <Button
+              bg={"none"}
+              color={"secondary"}
+              onClick={educationRefScroll}
+            >
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>IT Skills</Text>
+            <Button bg={"none"} color={"secondary"} onClick={itSkillsRefScroll}>
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Projects</Text>
+            <Button bg={"none"} color={"secondary"} onClick={projectsRefScroll}>
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Profile Summary</Text>
+            <Button
+              bg={"none"}
+              color={"secondary"}
+              onClick={profileSummaryRefScroll}
+            >
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Carrer Profile</Text>
+            <Button
+              bg={"none"}
+              color={"secondary"}
+              onClick={carrerProfileRefScroll}
+            >
+              ADD
+            </Button>
+          </Flex>
+          <Flex
+            height={"9%"}
+            alignItems={"center"}
+            justifyContent={"space-between"}
+          >
+            <Text>Personal Details</Text>
+            <Button
+              bg={"none"}
+              color={"secondary"}
+              onClick={personalDetailsRefScroll}
+            >
+              ADD
+            </Button>
+          </Flex>
+        </Box>
         <Box
           display={"flex"}
           flexDir={"column"}
@@ -160,7 +346,13 @@ function Profile() {
         >
           {/* Resume */}
           <Box width={"100%"} bg={"white"} borderRadius={"5px"}>
-            <Flex flexDir={"column"} gap={"0.25rem"} p={"1rem"} height={"32vh"} overflowY={"hidden"} >
+            <Flex
+              flexDir={"column"}
+              gap={"0.25rem"}
+              p={"1rem"}
+              height={"32vh"}
+              overflowY={"hidden"}
+            >
               <Text fontSize={"22px"} fontWeight="600">
                 Resume
               </Text>
@@ -213,39 +405,16 @@ function Profile() {
             </Flex>
           </Box>
 
-          {/* resume headline */}
+          <ResumeHeadline ref={resumeHeadlineRef} />
+          <KeySkills ref={keySKillsRef} />
+          <Employement ref={employmentRef} />
+          <Education ref={educationRef} />
+          <ItSkills  ref={itSkillsRef}/>
+          <Projects ref={projectsRef} />
+          <ProfileSummary ref={profileSummaryRef} />
+          <CarrerProfile ref={carrerProfileRef} />
+          <PersonalDetail ref={personalDetailsRef} />
 
-          {/* <Box width={"100%"} bg={"white"} borderRadius={"5px"}>
-            <Flex flexDir={"column"} gap={"0.5rem"} p={"1rem"} height={"15vh"} >
-              <Flex alignItems={"center"} justifyContent={"space-between"} >
-                <Text fontSize={"22px"} fontWeight="600">
-                  Resume Headline
-                </Text>
-                <Button bg="none" color={"secondary"} fontSize={"16px"}>ADD RESUME HEADLINE</Button>
-              </Flex>
-              <Text>
-                It is the first thing recruiters notice in your profile. Write
-                concisely what makes you unique and right person for the job you
-                looking for
-              </Text>
-            </Flex>
-          </Box> */}
-
-          {/* keyskills */}
-
-          <ResumeHeadline />
-
-          <Box width={"100%"} height={"25vh"} bg={"white"} borderRadius={"5px"}>
-            <Box p={"1rem"} height={"25vh"}>
-              Resume
-            </Box>
-          </Box>
-
-          <Box width={"100%"} height={"25vh"} bg={"white"} borderRadius={"5px"}>
-            <Box p={"1rem"} height={"25vh"}>
-              Resume
-            </Box>
-          </Box>
         </Box>
       </Box>
     </Box>

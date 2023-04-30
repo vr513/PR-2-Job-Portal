@@ -18,12 +18,12 @@ import {
 import { Formik } from "formik";
 import React, { forwardRef } from "react";
 
-function ResumeHeadline({}, resumeHeadlineRef) {
+function ProfileSummary({}, profileSummaryRef) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box
-      ref={resumeHeadlineRef}
+      ref={profileSummaryRef}
       width={"100%"}
       bg={"white"}
       borderRadius={"5px"}
@@ -31,7 +31,7 @@ function ResumeHeadline({}, resumeHeadlineRef) {
       <Flex flexDir={"column"} gap={"0.5rem"} p={"1rem"}>
         <Flex alignItems={"center"} justifyContent={"space-between"}>
           <Text fontSize={"22px"} fontWeight="600">
-            Resume Headline
+            Profile Summary
           </Text>
           <Button
             onClick={onOpen}
@@ -39,13 +39,14 @@ function ResumeHeadline({}, resumeHeadlineRef) {
             color={"secondary"}
             fontSize={"16px"}
           >
-            ADD RESUME HEADLINE
+            ADD PROFILE SUMMARY
           </Button>
         </Flex>
         <Text color={"#8F8F8F"}>
-          It is the first thing recruiters notice in your profile. Write
-          concisely what makes you unique and right person for the job you
-          looking for
+          Your Profile Summary should mention the highlights of your career and
+          education, what your professional interests are, and what kind of a
+          career you are looking for. Write a meaningful summary of more than 50
+          characters.
         </Text>
       </Flex>
 
@@ -53,14 +54,14 @@ function ResumeHeadline({}, resumeHeadlineRef) {
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>Add Resume Headline</ModalHeader>
+          <ModalHeader>Add Profile Summary</ModalHeader>
           <ModalCloseButton />
 
           <form>
             <ModalBody>
               <>
                 <FormControl>
-                  <FormLabel>Resume headline</FormLabel>
+                  <FormLabel>Profile Summary</FormLabel>
                   <Input type="text" />
                 </FormControl>
               </>
@@ -81,4 +82,4 @@ function ResumeHeadline({}, resumeHeadlineRef) {
   );
 }
 
-export default forwardRef(ResumeHeadline);
+export default forwardRef(ProfileSummary);

@@ -18,20 +18,15 @@ import {
 import { Formik } from "formik";
 import React, { forwardRef } from "react";
 
-function ResumeHeadline({}, resumeHeadlineRef) {
+function Employement({}, employmentRef) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box
-      ref={resumeHeadlineRef}
-      width={"100%"}
-      bg={"white"}
-      borderRadius={"5px"}
-    >
+    <Box ref={employmentRef} width={"100%"} bg={"white"} borderRadius={"5px"}>
       <Flex flexDir={"column"} gap={"0.5rem"} p={"1rem"}>
         <Flex alignItems={"center"} justifyContent={"space-between"}>
           <Text fontSize={"22px"} fontWeight="600">
-            Resume Headline
+            Employement
           </Text>
           <Button
             onClick={onOpen}
@@ -39,13 +34,12 @@ function ResumeHeadline({}, resumeHeadlineRef) {
             color={"secondary"}
             fontSize={"16px"}
           >
-            ADD RESUME HEADLINE
+            ADD EMPLOYEMENT
           </Button>
         </Flex>
         <Text color={"#8F8F8F"}>
-          It is the first thing recruiters notice in your profile. Write
-          concisely what makes you unique and right person for the job you
-          looking for
+          Mention your employment details including your current and previous
+          company work experience.
         </Text>
       </Flex>
 
@@ -53,16 +47,27 @@ function ResumeHeadline({}, resumeHeadlineRef) {
         <ModalOverlay />
 
         <ModalContent>
-          <ModalHeader>Add Resume Headline</ModalHeader>
+          <ModalHeader>Add Employement details</ModalHeader>
           <ModalCloseButton />
 
           <form>
             <ModalBody>
               <>
-                <FormControl>
-                  <FormLabel>Resume headline</FormLabel>
-                  <Input type="text" />
-                </FormControl>
+                <Flex direction={"column"} gap={"2rem"}>
+                  <FormControl>
+                    <FormLabel>Role</FormLabel>
+                    <Input type="text" />
+
+                    <FormLabel>Experience since </FormLabel>
+                    <Input type="date" />
+                  </FormControl>
+
+                  {/* 
+                  <FormControl>
+                    <FormLabel>Past Experience</FormLabel>
+                    <Input type="text" />
+                  </FormControl> */}
+                </Flex>
               </>
             </ModalBody>
 
@@ -81,4 +86,4 @@ function ResumeHeadline({}, resumeHeadlineRef) {
   );
 }
 
-export default forwardRef(ResumeHeadline);
+export default forwardRef(Employement);
