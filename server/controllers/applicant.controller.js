@@ -115,17 +115,19 @@ exports.updateKeySkills = async (req, res) => {
   try {
     const response1 = await Applicant.findOneAndUpdate(
       { userId: req.user._id },
-      { $set: { keySkills: req.body.keySkills } }
+      { $set: { keySkills: req.body.keySkills } },
+      { new: true } // This option returns the updated document
     ).exec();
     if (!response1) {
       return res.status(404).send({ msg: "Invalid Arguments" });
     }
-    return res.status(200).send({ msg: "success" });
+    return res.status(200).send({ msg: "success", user: response1 });
   } catch (err) {
     console.error(err);
     res.status(500).send({ err });
   }
 };
+
 
 exports.addNewEmployment = async (req, res) => {
   try {
