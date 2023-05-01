@@ -97,11 +97,9 @@ function Register() {
     },
   };
 
-
-
   return (
     <Flex>
-      <Box bg="primary" width="100vw" height="100vh">
+      <Box bg="primary" width="100vw" height="100vh" fontFamily="poppins">
         <HStack
           display="flex"
           alignItems="center"
@@ -109,13 +107,18 @@ function Register() {
           height="100%"
         >
           <Box width="35%" marginLeft="5%">
-            <Heading fontSize="3rem" marginTop="2rem">
+            <Heading fontFamily="poppins" fontSize="3rem" marginTop="2rem">
               COMMIT
             </Heading>
-            <Heading fontSize="1.5rem" marginTop="2rem" marginBottom="0.5rem">
+            <Heading
+              fontFamily="poppins"
+              fontSize="1.5rem"
+              marginTop="2rem"
+              marginBottom="0.5rem"
+            >
               Register
             </Heading>
-            <Formik>
+            <>
               <Box
                 as="form"
                 onSubmit={formik.handleSubmit}
@@ -308,7 +311,7 @@ function Register() {
                   Register Now
                 </Button>
               </Box>
-            </Formik>
+            </>
           </Box>
 
           <Box
