@@ -8,16 +8,20 @@ import AdminDashboard from "./screens/AdminDashboard";
 import Home from "./screens/Home";
 import Jobs from "./screens/Jobs"
 import Profile from "./screens/Profile";
+import EmployerDashboard from "./screens/EmployerDashboard";
+import JobApplicants from "./screens/[id]";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
           <Route path = "/" element = {<Auth />} />
           <Route path = "/register" element = {<Register />} />
-          <Route path ="/AdminDashboard" element ={<AdminDashboard />} />
-          <Route path ="/Home" element = {<Home />} />
-          <Route path ="/Jobs" element = {<Jobs />} />
-          <Route path ="/Profile" element = {<Profile />} />
+          <Route path ="/admin-dashboard" element ={<AdminDashboard />} />
+          <Route path ="/home" element = {<Home />} />
+          <Route path ="/jobs" element = {<Jobs />} />
+          <Route path ="/profile" element = {<Profile />} />
+          <Route path ="/employer-dashboard" element = {<EmployerDashboard />} />
+          <Route path ="/applicants" element = {<JobApplicants />} />
       </Routes>
     </BrowserRouter>
   );
