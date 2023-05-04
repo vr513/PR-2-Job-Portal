@@ -24,7 +24,7 @@ const AuthProvider = ({ children }) => {
         setIsLoggedIn(true);
         setRole(res.data.userRole);
         localStorage.setItem("token", res.data.accessToken);
-        localStorage.setItem("currentUser", res.data.userData);
+        localStorage.setItem("currentUser", JSON.stringify(res.data.userData));
         localStorage.setItem("role", res.data.userRole);
         return res;
       } else return res;
@@ -47,7 +47,7 @@ const AuthProvider = ({ children }) => {
         name: targetName,
         role: targetRole,
       });
-      if (res.status === 201) return res;
+      if (res.status === 200) return res;
     } catch (err) {
       console.log(err);
       return err.response;

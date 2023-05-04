@@ -21,29 +21,64 @@ import {
   FormErrorMessage,
   background,
   InputGroup,
+  Alert,
+  AlertIcon,
+  AlertTitle,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { Formik, useFormik } from "formik";
 import { authSchema } from "../../schemas/auth";
 import { motion } from "framer-motion";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function SignUp({ toggleForm }) {
+  const [viewPass, setViewPass] = useState(false);
+  const [viewIcon, setViewIcon] = useState(false);
+  const [alertStatus, setAlertStatus] = useState("success");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("Temp");
+
+  const { signup } = useAuth();
+
+  const submitForm = async (formik) => {
+    setShowAlert(false);
+    try {
+      const res = await signup(
+        formik.values.email,
+        formik.values.password,
+        formik.values.name,
+        formik.values.role
+      );
+
+      if (res.status < 200 || res.status > 300) {
+        setAlertStatus("error");
+        setAlertTitle(res.data.err);
+      } else {
+        setAlertStatus("success");
+        setAlertTitle(res.data.message);
+      }
+      setShowAlert(true);
+    } catch (err) {
+      setAlertStatus("error");
+
+      console.log(err);
+    }
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
+      name: "",
       password: "",
       confirmPassword: "",
+      role: "applicant",
     },
-    validationSchema: authSchema,
+
     onSubmit: (values, action) => {
-      alert(JSON.stringify(values, null, 2));
+      submitForm(formik);
     },
   });
-
-  const [viewPass, setViewPass] = useState(false);
-  const [viewIcon, setViewIcon] = useState(false);
-  console.log(formik.errors);
 
   return (
     <Box
@@ -53,11 +88,51 @@ export default function SignUp({ toggleForm }) {
       gap="15px"
       onSubmit={formik.handleSubmit}
     >
-      <Text color={"#000"} pt="10pxpx" fontSize="32px" fontFamily="Poppins" fontWeight="600">
+      <Text
+        color={"#000"}
+        pt="10pxpx"
+        fontSize="32px"
+        fontFamily="Poppins"
+        fontWeight="600"
+      >
         Welcome!
       </Text>
+      {showAlert && (
+        <Alert borderRadius={"10px"} status={alertStatus}>
+          <AlertIcon />
+          <AlertTitle>{alertTitle}</AlertTitle>
+        </Alert>
+      )}
       <Box>
-        <FormControl isInvalid={formik.errors.email && formik.touched.email}>
+        <FormControl isInvalid={formik.errors.name && formik.touched.name}>
+          <FormLabel
+            color="#666666"
+            fontFamily="Poppins"
+            fontWeight="400"
+            fontSize="16px"
+            lineHeight="20px"
+          >
+            Name
+          </FormLabel>
+          <Input
+            type="text"
+            name="name"
+            variant="flushed"
+            color="black"
+            borderColor="#666666"
+            height="2rem"
+            focusBorderColor="black"
+            fontSize="18px"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          <FormErrorMessage>{formik.errors.name}</FormErrorMessage>
+        </FormControl>
+        <FormControl
+          mt="10px"
+          isInvalid={formik.errors.email && formik.touched.email}
+        >
           <FormLabel
             color="#666666"
             fontFamily="Poppins"
@@ -88,7 +163,7 @@ export default function SignUp({ toggleForm }) {
 
         <FormControl
           isInvalid={formik.errors.password && formik.touched.password}
-          mt="30px"
+          mt="10px"
         >
           <FormLabel
             color="#666666"
@@ -145,7 +220,7 @@ export default function SignUp({ toggleForm }) {
           <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
         </FormControl>
 
-        <FormControl
+        {/* <FormControl
           isInvalid={
             formik.errors.confirmPassword && formik.touched.confirmPassword
           }
@@ -204,15 +279,37 @@ export default function SignUp({ toggleForm }) {
             </InputRightElement>
           </InputGroup>
           <FormErrorMessage>{formik.errors.confirmPassword}</FormErrorMessage>
-        </FormControl>
+        </FormControl> */}
       </Box>
-
-      <RadioGroup defaultValue="2">
+      {/* <RadioGroup defaultValue="2">
         <Stack spacing={5} direction="row">
           <Radio colorScheme="green" value="1">
             I'm An Employee
           </Radio>
           <Radio colorScheme="blue" value="2">
+            I'm An Employer
+          </Radio>
+        </Stack>
+      </RadioGroup> */}
+      <RadioGroup
+        value={formik.values.role}
+        onChange={(value) => formik.setFieldValue("role", value)}
+      >
+        <Stack spacing={5} direction="row">
+          <Radio
+            name="role"
+            colorScheme="green"
+            value="applicant"
+            checked={formik.values.role === "applicant"}
+          >
+            I'm An Applicant
+          </Radio>
+          <Radio
+            name="role"
+            colorScheme="blue"
+            value="employer"
+            checked={formik.values.role === "employer"}
+          >
             I'm An Employer
           </Radio>
         </Stack>

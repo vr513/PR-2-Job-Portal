@@ -24,7 +24,6 @@ function sideBar() {
     }
   };
 
-  console.log(close);
   return (
     <Flex
       flexDirection="column"

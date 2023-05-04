@@ -10,17 +10,27 @@ import Jobs from "./screens/Jobs"
 import Profile from "./screens/Profile";
 import EmployerDashboard from "./screens/EmployerDashboard";
 import JobApplicants from "./screens/[id]";
+import { useAuth } from "./contexts/AuthContext";
 function App() {
+  const {isLoggedIn , role} = useAuth();
+
+  const getRootScreen = () => {
+    if(isLoggedIn){
+      if(role === 'applicant') return <Home />;
+      else if(role === 'admin') return <AdminDashboard />;
+      else return <EmployerDashboard />;
+    }else{
+      return <Auth />;
+    }
+  }
   return (
     <BrowserRouter>
       <Routes>
-          <Route path = "/" element = {<Auth />} />
+          <Route path = "/" element = {getRootScreen()} />
           <Route path = "/register" element = {<Register />} />
-          <Route path ="/admin-dashboard" element ={<AdminDashboard />} />
           <Route path ="/home" element = {<Home />} />
           <Route path ="/jobs" element = {<Jobs />} />
           <Route path ="/profile" element = {<Profile />} />
-          <Route path ="/employer-dashboard" element = {<EmployerDashboard />} />
           <Route path ="/applicants" element = {<JobApplicants />} />
       </Routes>
     </BrowserRouter>
