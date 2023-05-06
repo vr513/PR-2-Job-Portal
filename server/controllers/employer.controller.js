@@ -32,3 +32,23 @@ exports.getApplicants = async(req,res) => {
     res.status(500).send({ err });
   }
 }
+
+exports.getPostedJobs = async(req,res) => {
+  try{
+    const employer = await Employer.findById(req.user.referentialId).populate('allJobs');
+
+    const jobs = employer.allJobs.map((job) => ({
+      jobId : job._id,
+      jobTitle: job.jobTitle,
+      active: job.active,
+      created: job.created,
+      applicants: job.applicants,
+      numOfApplicants : job.applicants.length,
+    }));
+
+    res.status(200).send({jobs});
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}

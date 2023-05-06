@@ -68,6 +68,7 @@ const AuthProvider = ({ children }) => {
           headers: { Authorization: `JWT ${token2}` },
         };
         const response = await axios.get("/refresh-token", config);
+        console.log(response);
         setToken(response.data.accessToken);
       } catch (err) {
         logout();
@@ -90,6 +91,9 @@ const AuthProvider = ({ children }) => {
     setCurrentUser(null);
     setIsLoggedIn(false);
     setRole(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('role');
     return true;
   };
 

@@ -19,7 +19,7 @@ exports.getAllEmployers = async (req, res) => {
       { role: "employer" },
       "name verified created email"
     ).exec();
-    res.status(200).send({ results });
+    res.status(200).send({ results : results , timestamp : Date.now() });
   } catch (err) {
     console.error(err);
     res.status(500).send({ err });
@@ -27,6 +27,7 @@ exports.getAllEmployers = async (req, res) => {
 };
 
 exports.blockUser = async (req, res) => {
+  console.log(req.body);
   try {
     const result = await User.findOneAndUpdate(
       { _id: req.body.targetUser },
@@ -40,6 +41,7 @@ exports.blockUser = async (req, res) => {
 };
 
 exports.approveUser = async (req, res) => {
+  console.log(req.body);
   try {
     const result = await User.findOneAndUpdate(
       { _id: req.body.targetUser },

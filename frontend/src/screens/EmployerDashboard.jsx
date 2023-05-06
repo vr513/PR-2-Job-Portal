@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { Box, Button, HStack, Heading, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, HStack, Heading, Text, VStack, useToast } from "@chakra-ui/react";
+import { useAuth } from "../contexts/AuthContext";
+import axios from '../utils/axiosConfig'
 
 const TableHeading = ({ heading }) => {
   return (
@@ -20,23 +22,67 @@ const TableHeading = ({ heading }) => {
   );
 };
 
-const TableRow = () => {
+const TableRow = ({job , getPostedJobs}) => {
+  const {token} = useAuth();
+  const toast = useToast();
+
+  const showToast = (status, msg) => {
+    toast({
+      title: msg,
+      status: status,
+      isClosable: true,
+      position :'top-right'
+    });
+  };
+
+  const openJob = (uid , isOpen) => {
+    if(!isOpen){
+      try{
+        const config = {
+          headers: { Authorization: `JWT ${token}` },
+        };
+        const response = axios.post('/update-job-status',{targetJobId : uid , jobActiveStatus : true},config);
+        getPostedJobs()
+        showToast('success',"Job Status updated successfully");
+      }catch(err){
+        console.error(err);
+      }
+    }else{
+      showToast('error','Job already open');
+    }
+  }
+  const closeJob = (uid , isOpen) => {
+    if(isOpen){
+      try{
+        const config = {
+          headers: { Authorization: `JWT ${token}` },
+        };
+        const response = axios.post('/update-job-status',{targetJobId : uid , jobActiveStatus : false},config);
+        getPostedJobs()
+        showToast('success',"Job Status updated successfully");
+      }catch(err){
+        console.error(err);
+      }
+    }else{
+      showToast('error','Job already closed');
+    }
+  }
   return (
     <>
       <HStack w={"100%"} justifyContent={'space-between'}>
         <Box fontFamily={"Poppins"} w={"30%"} px={"1rem"}>
           <Text fontSize={"16px"} color={"#000"} lineHeight={"36px"}>
-            Job name
+            {job.jobTitle}
           </Text>
         </Box>
         <Box fontFamily={"Poppins"} w={"30%"} px={"1rem"}>
           <Text w={'100%'} textAlign={'center'} fontSize={"16px"} color={"#000"} lineHeight={"36px"}>
-            25
+            {job.numOfApplicants}
           </Text>
         </Box>
         <HStack justifyContent={'space-around'} fontFamily={"Poppins"} w={"30%"} px={"1rem"} color={'#FFF'}>
-          <Button _hover={{}} borderRadius={'25px'} backgroundColor={'#009645'}>Open</Button>
-          <Button _hover={{}} borderRadius={'25px'} backgroundColor={'#7C0000'}>Close</Button>
+          <Button _hover={{}} onClick={() => openJob(job.jobId,job.active)} borderRadius={'25px'} backgroundColor={'#009645'}>Open</Button>
+          <Button _hover={{}} onClick={() => closeJob(job.jobId,job.active)} borderRadius={'25px'} backgroundColor={'#7C0000'}>Close</Button>
         </HStack>
       </HStack>
     </>
@@ -44,6 +90,27 @@ const TableRow = () => {
 };
 
 const EmployerDashboard = () => {
+  
+  const [jobs , setJobs] = useState([]);
+
+  const {token} = useAuth();
+
+  const getPostedJobs = async() => {
+    try{
+      const config = {
+        headers: { Authorization: `JWT ${token}` },
+      };
+      const response = await axios.get('/employer/jobs',config);
+      setJobs(response.data.jobs);
+    }catch(err){
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    getPostedJobs();
+  },[])
+
   return (
     <>
       <Box minH={"100vh"} height={"auto"} w={"100%"} bg={"primary"}>
@@ -81,9 +148,10 @@ const EmployerDashboard = () => {
             <TableHeading heading={"Status"} />
           </Box>
           <VStack w={"100%"} mt={'1rem'}>
+            {/* <TableRow />
             <TableRow />
-            <TableRow />
-            <TableRow />
+            <TableRow /> */}
+            {jobs.map((job, index) => <TableRow getPostedJobs={getPostedJobs} key={job.jobId} job={job} />)}
           </VStack>
         </Box>
       </Box>

@@ -1,4 +1,5 @@
 import { CalendarIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {CiLogout} from 'react-icons/ci'
 import {
   Avatar,
   Box,
@@ -14,8 +15,12 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-function sideBar() {
+import { useAuth } from "../../contexts/AuthContext";
+const sideBar = ()  => {
   const [navSize, changeNavSize] = useState("large");
+
+  const {logout} = useAuth();
+
   const handleClose = () => {
     if (navSize === "small") {
       changeNavSize("large");
@@ -121,6 +126,21 @@ function sideBar() {
         />
         <Text fontSize="15px" fontWeight="300" color="white" display={navSize === "small" ? "none" : ""}>
           Manage Team
+        </Text>
+      </Box>
+
+      <Box
+        alignItems="center"
+        alignSelf="center"
+        width="60%"
+        gap="1.5rem"
+        display={navSize === "small" ? "none" : "flex"}
+        onClick={logout}
+        _hover={{cursor : 'pointer'}}
+      >
+        <Icon as={CiLogout} color={'white'} boxSize={5} />
+        <Text fontSize="15px" fontWeight="300" color="white" display={navSize === "small" ? "none" : ""}>
+          Logout
         </Text>
       </Box>
     </Flex>

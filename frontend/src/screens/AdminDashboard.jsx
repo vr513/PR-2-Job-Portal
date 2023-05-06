@@ -3,31 +3,24 @@ import SideBar from "../components/adminDashboard/SideBar";
 import {
   Box,
   Button,
-  Divider,
-  Flex,
-  HStack,
   Heading,
-  Spacer,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
   Text,
-  Tfoot,
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
-import SignUp from "../components/auth/SignUp";
-import { color } from "framer-motion";
+
 
 import axios from "../utils/axiosConfig";
 import { useAuth } from "../contexts/AuthContext";
 
 function generateRandomString(length) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   let result = "";
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -35,20 +28,64 @@ function generateRandomString(length) {
   return result;
 }
 
-const approveEmployer = (uid) => {
-  console.log(uid);
-}
+const EmployerTableRow = ({ employer, index, getAllEmployers }) => {
+  const {token} = useAuth();
+  const toast = useToast();
 
-const blockEmployer = (uid) => {
-  console.log(uid);
-}
+  const showToast = (status, msg) => {
+    toast({
+      title: msg,
+      status: status,
+      isClosable: true,
+      position :'top-right'
+    });
+  };
 
-const EmployerTableRow = ({ employer, index }) => {
+  const approveEmployer = async(uid, isVerified) => {
+    if (!isVerified){
+      let res;
+      try{
+        const config = {
+          headers: { Authorization: `JWT ${token}` },
+        };
+        res = await axios.post('/approve-employer',{ targetUser: uid },config)
+        getAllEmployers();
+        showToast('success','Employer approved successfully');
+      }catch(err){
+        console.log(err)
+      }
+    }
+    else {
+      showToast("error", "Employer already approved");
+    }
+  };
+
+  const blockEmployer = async(uid, isVerified) => {
+    if (isVerified) {
+      let res;
+      try{
+        const config = {
+          headers: { Authorization: `JWT ${token}` },
+        };
+        res = await axios.post('/block-employer',{ targetUser: uid },config)
+        getAllEmployers();
+        showToast('success','Employer blocked successfully')
+      }catch(err){
+        console.log(err)
+      }
+    }
+    else {
+      showToast("error", "Employer already blocked");
+    }
+  };
+
   return (
     <>
       <Tr>
-        <Td textTransform={'capitalize'} >{index}. {employer.name}</Td>
-        <Td>{generateRandomString()}</Td>
+        <Td textTransform={"capitalize"}>
+          {index}. {employer.name}
+        </Td>
+        <Td>{generateRandomString(15)}</Td>
         <Td
           display="flex"
           justifyContent="space-between"
@@ -65,7 +102,7 @@ const EmployerTableRow = ({ employer, index }) => {
             fontWeight="400"
             _hover={{ bg: "green" }}
             disabled={true}
-            onClick={() => approveEmployer(employer._id)}
+            onClick={() => approveEmployer(employer._id, employer.verified)}
           >
             Approve
           </Button>
@@ -77,7 +114,7 @@ const EmployerTableRow = ({ employer, index }) => {
             fontWeight="400"
             _hover={{ bg: "red.600" }}
             disabled={employer.verified}
-            onClick={() => blockEmployer(employer._id)}
+            onClick={() => blockEmployer(employer._id, employer.verified)}
           >
             Block
           </Button>
@@ -260,40 +297,14 @@ const AdminDashboard = () => {
                 </Tr>
               </Thead>
               <Tbody fontSize="18px">
-                <Tr>
-                  <Td>1. Google</Td>
-                  <Td>36AAGCG6803L1ZD</Td>
-                  <Td
-                    display="flex"
-                    justifyContent="space-between"
-                    width="92%"
-                    pl={0}
-                    pr={0}
-                    gap="1rem"
-                  >
-                    <Button
-                      color="white"
-                      bg="#009645"
-                      width="50%"
-                      borderRadius="5px"
-                      fontWeight="400"
-                      _hover={{ bg: "green" }}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      color="white"
-                      width="50%"
-                      bg="red"
-                      borderRadius="5px"
-                      fontWeight="400"
-                      _hover={{ bg: "red.600" }}
-                    >
-                      Deny
-                    </Button>
-                  </Td>
-                </Tr>
-                {employers.map((emp,index) => <EmployerTableRow index={index + 1} employer={emp} key={`emp-${index}`} />)}
+                {employers.map((emp, index) => (
+                  <EmployerTableRow
+                    index={index + 1}
+                    employer={emp}
+                    key={`emp-${index}`}
+                    getAllEmployers={getAllEmployers}
+                  />
+                ))}
               </Tbody>
             </Table>
           </TableContainer>
