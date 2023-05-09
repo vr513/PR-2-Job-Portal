@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect, createContext } from "react";
 import axios from "../utils/axiosConfig";
+import Loading from "../components/Loading";
 
 const AuthContext = createContext();
 
@@ -9,6 +10,8 @@ const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [refreshTokenLoading , setRefreshTokenLoading] = useState(true);
+  const [refetchDataLoading , setRefetchDataLoading] = useState(true);
 
   const login = async (targetEmail, targetPassword) => {
     let res;
@@ -23,9 +26,9 @@ const AuthProvider = ({ children }) => {
         setCurrentUser(res.data.userData);
         setIsLoggedIn(true);
         setRole(res.data.userRole);
-        localStorage.setItem("token", res.data.accessToken);
-        localStorage.setItem("currentUser", JSON.stringify(res.data.userData));
-        localStorage.setItem("role", res.data.userRole);
+        localStorage.setItem("token", token);
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    localStorage.setItem("role", role);
         return res;
       } else return res;
     } catch (err) {
@@ -56,10 +59,11 @@ const AuthProvider = ({ children }) => {
 
   const refreshToken = async () => {
     const token2 = localStorage.getItem("token");
-    const currentUser2 = localStorage.getItem("currentUser");
     const role2 = localStorage.getItem("role");
+    const currentUser2 = localStorage.getItem('currentUser');
     if (currentUser2 === null || currentUser2 === undefined || role2 === null || role2 === undefined) {
       logout();
+      setRefreshTokenLoading(false);
       return;
     }
     if (token2 !== null && token2 !== undefined) {
@@ -70,24 +74,51 @@ const AuthProvider = ({ children }) => {
         const response = await axios.get("/refresh-token", config);
         console.log(response);
         setToken(response.data.accessToken);
+        setRole(role2);
+        setIsLoggedIn(true);
+        setRefreshTokenLoading(false);
+        
+        return;
       } catch (err) {
+        setRefreshTokenLoading(false);
         logout();
       }
     } else {
+      setRefreshTokenLoading(false);
       logout();
       return;
     }
-    setCurrentUser(currentUser2);
-    setRole(role2);
-    setIsLoggedIn(true);
   };
 
+  const refetchUserData = async() => {
+    try{
+      const config = {
+        headers: { Authorization: `JWT ${localStorage.getItem('token')}` },
+      };
+      const response = await axios.get('refetch-user-data',config);
+      setCurrentUser(response.data.userData);
+      setRefetchDataLoading(false);
+    }catch(err){
+      console.error(err);
+      setRefetchDataLoading(false);
+    }
+  }
+
+  const saveSessionData = () => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("currentUser", JSON.stringify(currentUser));
+    localStorage.setItem("role", role);
+  }
+ 
   useEffect(() => {
     refreshToken();
-    setLoading(false);
+    refetchUserData();
   }, []);
 
+  window.addEventListener('unload', saveSessionData);
+
   const logout = () => {
+    setToken(null)
     setCurrentUser(null);
     setIsLoggedIn(false);
     setRole(null);
@@ -105,11 +136,13 @@ const AuthProvider = ({ children }) => {
     login,
     logout,
     signup,
+    refetchUserData,
+    setCurrentUser
   };
-
+ 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {!refetchDataLoading && !refreshTokenLoading && children}
     </AuthContext.Provider>
   );
 };

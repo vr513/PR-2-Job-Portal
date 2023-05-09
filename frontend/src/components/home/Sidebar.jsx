@@ -1,7 +1,9 @@
 import { Avatar, Box, Icon, Link, Text } from "@chakra-ui/react";
 import React from "react";
-import { MdOutlineHome } from "react-icons/md";
+import { MdOutlineHome, MdLogout } from "react-icons/md";
+import { useAuth } from "../../contexts/AuthContext";
 function Sidebar() {
+  const {logout} = useAuth();
   return (
     <Box
       display="flex"
@@ -35,15 +37,19 @@ function Sidebar() {
         <Box display="flex" flexDir="column" gap="1rem" mt="1rem">
           <Box display="flex"  gap="1rem">
             <Icon boxSize={6} as={MdOutlineHome} />
-            <Link>My home</Link>
+            My Home
           </Box>
           <Box display="flex"  gap="1rem">
             <Icon boxSize={6} as={MdOutlineHome} />
-            <Link>Jobs</Link>
+            Jobs
           </Box>
           <Box display="flex" gap="1rem">
             <Icon boxSize={6} as={MdOutlineHome} />
-            <Link>Companies</Link>
+            Companies
+          </Box>
+          <Box _hover={{cursor : "pointer"}} onClick={logout} display="flex" gap="1rem">
+            <Icon boxSize={6} as={MdLogout} />
+            Logout
           </Box>
         </Box>
       </Box>

@@ -141,12 +141,13 @@ exports.addNewEmployment = async (req, res) => {
     };
     const response1 = await Applicant.findOneAndUpdate(
       { userId: req.user._id },
-      { $push: { employmentHistory: newWorkExp } }
+      { $push: { employmentHistory: newWorkExp } },
+      { new: true }
     ).exec();
     if (!response1) {
       return res.status(404).send({ msg: "Invalid Arguments" });
     }
-    return res.status(200).send({ msg: "success" });
+    return res.status(200).send({ msg: "success" , user : response1 });
   } catch (err) {
     console.error(err);
     res.status(500).send({ err });
@@ -305,3 +306,4 @@ exports.getApplicantData = async(req,res) => {
     res.status(500).send({ err });
   }
 }
+

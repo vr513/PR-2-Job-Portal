@@ -13,7 +13,7 @@ router.post('/jobs/new',verifyToken,verifiedEmployerCheck,createNewJob);
 
 router.post('/update-job-status',verifyToken,verifiedEmployerCheck,updateJobStatus);
 
-router.post('/jobs/:id/applications',verifyToken,verifiedEmployerCheck,viewJobApplications);
+router.get('/jobs/:id/applications',verifyToken,verifiedEmployerCheck,viewJobApplications);
 
 router.get('/employer/jobs',verifyToken,verifiedEmployerCheck,getPostedJobs);
 

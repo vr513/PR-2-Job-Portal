@@ -6,7 +6,7 @@ exports.createNewJob = async (req, res) => {
   try {
     const job = new Job({
       jobTitle: req.body.jobTitle,
-      companyName: req.body.companyName,
+      companyName: req.user.name,
       companyId: req.user._id,
       minWorkExperience: req.body.minWorkExperience,
       jobLocations: req.body.jobLocations,

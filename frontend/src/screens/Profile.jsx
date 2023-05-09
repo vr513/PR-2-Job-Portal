@@ -27,12 +27,15 @@ import Projects from "../components/profile/Projects";
 import ProfileSummary from "../components/profile/ProfileSummary";
 import CarrerProfile from "../components/profile/CarrerProfile";
 import PersonalDetail from "../components/profile/PersonalDetails";
+import { useAuth } from "../contexts/AuthContext";
 
 function Profile() {
   const [resumeFile, setResumeFile] = useState(null);
   const handleResumeInput = (e) => {
     setResumeFile(e.target.files[0]);
   };
+
+  const {currentUser} = useAuth();
 
   const itSkillsRef = useRef(null);
   const resumeRef = useRef(null);
@@ -44,6 +47,8 @@ function Profile() {
   const carrerProfileRef = useRef(null);
   const personalDetailsRef = useRef(null);
   const employmentRef = useRef(null);
+
+  const lastEmployment = currentUser?.employmentHistory[currentUser.employmentHistory.length - 1];
 
   const itSkillsRefScroll = () =>
     itSkillsRef.current.scrollIntoView({ behavior: "smooth" });
@@ -73,8 +78,10 @@ function Profile() {
   const employmentRefScroll = () =>
     employmentRef.current.scrollIntoView({ behavior: "smooth" });
 
+  console.log(currentUser);
+
   return (
-    <Box display="flex" height="100vh" flexDir="column" bg="primary">
+    <Box display="flex" height="100vh" flexDir="column" bg="primary" fontFamily={'Poppins'}>
       <Box
         position="fixed"
         top="0px"
@@ -90,7 +97,7 @@ function Profile() {
       >
         <Avatar boxSize="8rem" bg="#353535" alignSelf={"center"} />
         <Box display={"flex"} flexDir={"column"} width={"50vw"} gap={"0.75rem"}>
-          <Text fontSize={"22px"}>Pratap Rajput</Text>
+          <Text fontSize={"22px"}>{currentUser?.name}</Text>
 
           <HStack fontSize={"16px"}>
             <Box
@@ -100,7 +107,7 @@ function Profile() {
               gap={"1rem"}
             >
               <Icon boxSize={5} as={MdOutlineLocationOn} />
-              Pune,India
+              {currentUser?.address}
             </Box>
             <Box
               display={"flex"}
@@ -109,20 +116,22 @@ function Profile() {
               gap={"1rem"}
             >
               <Icon boxSize={5} as={MdOutlinePhone} />
-              +91591240914
+              +91{currentUser?.contactNumber}
             </Box>
           </HStack>
 
           <HStack fontSize={"16px"}>
-            <Box
+            {lastEmployment && (
+              <Box
               display={"flex"}
               width={"50%"}
               alignItems={"center"}
               gap={"1rem"}
             >
               <Icon boxSize={5} as={MdOutlineWorkOutline} />
-              Fresher
+              {lastEmployment.position} at {lastEmployment.companyName}
             </Box>
+            )}
             <Box
               display={"flex"}
               width={"50%"}
@@ -130,10 +139,10 @@ function Profile() {
               gap={"1rem"}
             >
               <Icon boxSize={5} as={MdOutlineMailOutline} />
-              pratp.rajput7676@gmail.com
+              {currentUser?.email}
             </Box>
           </HStack>
-          <HStack fontSize={"16px"}>
+          {/* <HStack fontSize={"16px"}>
             <Box
               display={"flex"}
               width={"50%"}
@@ -143,7 +152,7 @@ function Profile() {
               <Icon boxSize={5} as={MdOutlineCalendarToday} />
               Add Avail to join
             </Box>
-          </HStack>
+          </HStack> */}
         </Box>
         <Box
           width={"30vw"}
@@ -405,14 +414,11 @@ function Profile() {
             </Flex>
           </Box>
 
-          <ResumeHeadline ref={resumeHeadlineRef} />
+          
           <KeySkills ref={keySKillsRef} />
           <Employement ref={employmentRef} />
           <Education ref={educationRef} />
-          <ItSkills  ref={itSkillsRef}/>
           <Projects ref={projectsRef} />
-          <ProfileSummary ref={profileSummaryRef} />
-          <CarrerProfile ref={carrerProfileRef} />
           <PersonalDetail ref={personalDetailsRef} />
 
         </Box>
