@@ -65,7 +65,7 @@ const EmploymentCard = ({ employment }) => {
   );
 };
 
-function Employement({}, employmentRef) {
+function Employement({}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { currentUser, token, setCurrentUser } = useAuth();
@@ -84,7 +84,7 @@ function Employement({}, employmentRef) {
         toDate : formik.values.isCurrentJob ? null : new Date(formik.values.toDate)
       },config);
       setCurrentUser(response.data.user);
-      customClose();
+      customClose()
     }catch(err){
       console.error(err);
     }
@@ -95,16 +95,6 @@ function Employement({}, employmentRef) {
     position: Yup.string().required("Position is required"),
     isCurrentJob: Yup.boolean(),
     fromDate : Yup.date().required("Start date is required"),
-    // fromDate: Yup.date()
-    //   .required("From date is required")
-    //   .typeError("From date must be a valid date in the format DD/MM/YYYY"),
-    // toDate: Yup.date().when("isCurrentJob", {
-    //   is: false,
-    //   then: Yup.date()
-    //     .required("To date is required")
-    //     .typeError("To date must be a valid date in the format DD/MM/YYYY"),
-    //   otherwise: Yup.date().nullable(),
-    // }),
     description: Yup.string().required("Description is required"),
   });
 
@@ -128,7 +118,7 @@ function Employement({}, employmentRef) {
   };
 
   return (
-    <Box ref={employmentRef} width={"100%"} bg={"white"} borderRadius={"5px"}>
+    <Box id="employment" width={"100%"} bg={"white"} borderRadius={"5px"}>
       <Flex flexDir={"column"} gap={"0.5rem"} p={"1rem"}>
         <Flex alignItems={"center"} justifyContent={"space-between"}>
           <Text fontSize={"22px"} fontWeight="600">
@@ -149,7 +139,7 @@ function Employement({}, employmentRef) {
         </Text>
         <VStack>
           {currentUser.employmentHistory.map((employment, index) => (
-            <EmploymentCard key={index} employment={employment} />
+            <EmploymentCard key={`employment-${index}`} employment={employment} />
           ))}
         </VStack>
       </Flex>
@@ -279,4 +269,4 @@ function Employement({}, employmentRef) {
   );
 }
 
-export default forwardRef(Employement);
+export default Employement;

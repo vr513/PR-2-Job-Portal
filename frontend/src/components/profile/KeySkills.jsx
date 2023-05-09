@@ -68,7 +68,7 @@ const SkillPill2 = ({ location }) => {
   );
 };
 
-function KeySkills({}, keySKillsRef) {
+function KeySkills() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [skillVal, setSkillVal] = useState("");
 
@@ -123,7 +123,7 @@ function KeySkills({}, keySKillsRef) {
   };
 
   return (
-    <Box ref={keySKillsRef} width={"100%"} bg={"white"} borderRadius={"5px"}>
+    <Box id="key-skills"  width={"100%"} bg={"white"} borderRadius={"5px"}>
       <Flex flexDir={"column"} gap={"0.5rem"} p={"1rem"}>
         <Flex alignItems={"center"} justifyContent={"space-between"}>
           <Text fontSize={"22px"} fontWeight="600">
@@ -211,4 +211,4 @@ function KeySkills({}, keySKillsRef) {
   );
 }
 
-export default forwardRef(KeySkills);
+export default KeySkills;

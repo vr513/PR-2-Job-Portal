@@ -19,11 +19,19 @@ const {
   updateEducation,
   removeEducation,
   getApplicantData,
+  addNewProject,
+  savePersonalDetails,
+  saveJobPreferences,
 } = require("../controllers/applicant.controller");
 const { applyToJob, getJobs } = require("../controllers/jobs.controller");
 
 router.post("/create-applicant", verifyToken, applicantCheck, createApplicant);
-router.get("/get-applicant-data/:id",verifyToken,applicantCheck,getApplicantData);
+router.get(
+  "/get-applicant-data/:id",
+  verifyToken,
+  applicantCheck,
+  getApplicantData
+);
 router.post(
   "/update-location-preferences",
   verifyToken,
@@ -68,29 +76,22 @@ router.post(
   applicantCheck,
   removeEmployment
 );
+router.post("/add-education", verifyToken, applicantCheck, addNewEducation);
+router.post("/update-education", verifyToken, applicantCheck, updateEducation);
+router.post("/remove-education", verifyToken, applicantCheck, removeEducation);
+router.post("/jobs/:id/apply", verifyToken, applicantCheck, applyToJob);
+router.post("/add-project", verifyToken, applicantCheck, addNewProject);
+router.get("/jobs", verifyToken, applicantCheck, getJobs);
 router.post(
-  "/add-education",
+  "/save-personal-details",
   verifyToken,
   applicantCheck,
-  addNewEducation
+  savePersonalDetails
 );
 router.post(
-  "/update-education",
+  "/save-job-preferences",
   verifyToken,
   applicantCheck,
-  updateEducation
+  saveJobPreferences
 );
-router.post(
-  "/remove-education",
-  verifyToken,
-  applicantCheck,
-  removeEducation
-);
-router.post(
-  "/jobs/:id/apply",
-  verifyToken,
-  applicantCheck,
-  applyToJob
-)
-router.get('/jobs',verifyToken,applicantCheck,getJobs);
 module.exports = router;
