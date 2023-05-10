@@ -80,8 +80,7 @@ exports.viewJobApplications = async (req, res) => {
 
 exports.getJobs = async (req, res) => {
   try {
-    let { minSalary, preferredJobLocations } = req.query;
-    preferredJobLocations = JSON.parse(preferredJobLocations);
+    let { minSalary, preferredJobLocations } = req.body;
     let jobs = await Job.find({ active: true }).sort({ salary: -1 });
     if (minSalary) {
       jobs = jobs.filter((job) => job.salary >= minSalary);
@@ -101,3 +100,29 @@ exports.getJobs = async (req, res) => {
     res.status(500).send({ err });
   }
 };
+
+exports.getTopAppliedJobs = async (req, res) => {
+  try {
+    const jobs = await Job.find()
+      .sort({ applicants: -1 }) // Sort by number of applicants in descending order
+      .limit(5); // Limit to top 5 jobs
+
+    res.status(200).send({jobs});
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}
+
+exports.getJobDetails = async(req,res) => {
+  const {jobId} = req.params;
+  try{
+    const job = await Job.findById(jobId);
+    if(!job) res.status(402).send({msg : "Job not found"});
+
+    res.status(200).send({job})
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}

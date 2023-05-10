@@ -8,14 +8,147 @@ import {
   Link,
   Icon,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/home/Navbar";
 import Sidebar from "../components/home/Sidebar";
 import { MdOutlineLocationOn } from "react-icons/md";
+import { useAuth } from "../contexts/AuthContext";
+import axios from "../utils/axiosConfig";
+import { Link as RouterLink } from "react-router-dom";
 
-function Home() {
+function getElapsedDays(dateString) {
+  const currentDate = new Date();
+  const inputDate = new Date(dateString);
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  const elapsedMilliseconds = currentDate - inputDate;
+  const elapsedDays = Math.floor(elapsedMilliseconds / millisecondsPerDay);
+  return elapsedDays;
+}
+
+const JobPill = ({ location }) => {
   return (
-    <Box height="100%" width="100vw" bg="primary">
+    <Text
+      w={"max-content"}
+      color={"#FFF"}
+      bg={"#4B9C95"}
+      borderRadius={"25px"}
+      px={"10px"}
+      py={"2px"}
+      ml={"0px !important"}
+    >
+      {location}
+    </Text>
+  );
+};
+
+const JobCard = ({ job }) => {
+  return (
+    <>
+      <Box
+        display="flex"
+        justifyContent="space-around"
+        padding="0.5rem"
+        flexDir="column"
+        height="85%"
+        bg="white"
+        borderRadius="5px"
+        border="1px solid rgba(75, 156, 149, 0.5) "
+        width="450px"
+      >
+        <Text textAlign="end" width="100%">
+          {getElapsedDays(job.created)}d ago
+        </Text>
+        <Link as={RouterLink} to={`/jobs/${job._id}`} fontSize="20px" fontWeight="600" width="400px">
+          {job.jobTitle}
+        </Link>
+        <Text color="#5A5A5A">{job.companyName}</Text>
+        <Box display="flex" flexDir="row" gap={3}>
+          <Icon boxSize={6} as={MdOutlineLocationOn} />
+          <HStack gap={"10px"}>
+            {job.jobLocations.map((location, index) => (
+              <JobPill location={location} key={`sacda-${index}`} />
+            ))}
+          </HStack>
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+const CompanyCard = ({ company }) => {
+  return (
+    <>
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        padding="1rem"
+        flexDir="column"
+        height="90%"
+        bg="white"
+        borderRadius="5px"
+        border="1px solid rgba(75, 156, 149, 0.5) "
+        width="450px"
+        gap="0.5rem"
+      >
+        <Text fontSize="20px" fontWeight="600" width="400px" textAlign="center">
+          {company.name}
+        </Text>
+        <Box display="flex" justifyContent="center" gap="2">
+          <Text>Posted Jobs : {company.allJobs.length}</Text>
+          <span>|</span>
+          <Text>22.2k reviews</Text>
+        </Box>
+        <Link
+          fontSize="16px"
+          display="flex"
+          color="#4B9C95"
+          fontWeight="500"
+          justifyContent="center"
+        >
+          View Jobs
+        </Link>
+      </Box>
+    </>
+  );
+};
+
+const Home = () => {
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [topRecruiters, setTopRecruiters] = useState([]);
+
+  const { token } = useAuth();
+
+  const getRecommendedJobs = async () => {
+    try {
+      const config = {
+        headers: { Authorization: `JWT ${token}` },
+      };
+      const response = await axios.get("/recommended-jobs", config);
+      setRecommendedJobs(response.data.jobs);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getTopRecruiters = async () => {
+    try {
+      const config = {
+        headers: { Authorization: `JWT ${token}` },
+      };
+      const response = await axios.get("/top-recruiters", config);
+      setTopRecruiters(response.data.companies);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getRecommendedJobs();
+    getTopRecruiters();
+  }, []);
+
+  return (
+    <Box height="100%" width="100vw" bg="primary" fontFamily={"Poppins"}>
       <HStack width="100vw">
         <Sidebar />
         <Box
@@ -38,7 +171,7 @@ function Home() {
           >
             <HStack justifyContent="space-between" ml="3">
               <Heading fontWeight="500" color="#5A5A5A" fontSize="22px">
-                05 Recomded jobs
+                Recommended jobs
               </Heading>
               <Link>view all</Link>
             </HStack>
@@ -46,7 +179,7 @@ function Home() {
             <HStack
               height="300px"
               // overflowX="none"
-              
+
               overflowY="hidden"
               whiteSpace="nowrap"
               alignItems="flex-start"
@@ -67,79 +200,9 @@ function Home() {
                 },
               }}
             >
-              <Box
-                display="flex"
-                justifyContent="space-around"
-                padding="0.5rem"
-                flexDir="column"
-                height="85%"
-                bg="white"
-                borderRadius="5px"
-                border="1px solid rgba(75, 156, 149, 0.5) "
-                width="450px"
-              >
-                <Text textAlign="end" width="100%">
-                  3d ago
-                </Text>
-                <Link fontSize="20px" fontWeight="600" width="400px">
-                  Machine Learning Engg
-                </Link>
-                <Link color="#5A5A5A">lecta consultansts</Link>
-                <Box display="flex" flexDir="row" gap={3}>
-                  <Icon boxSize={6} as={MdOutlineLocationOn} />
-                  <Text color="#5A5A5A">Pune,Mumbai</Text>
-                </Box>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-around"
-                padding="0.5rem"
-                flexDir="column"
-                height="85%"
-                bg="white"
-                borderRadius="5px"
-                border="1px solid rgba(75, 156, 149, 0.5) "
-                width="450px"
-              >
-                <Text textAlign="end" width="100%">
-                  3d ago
-                </Text>
-                <Link fontSize="20px" fontWeight="600" width="400px">
-                  Machine Learning Engg
-                </Link>
-                <Link color="#5A5A5A">lecta consultansts</Link>
-                <Box display="flex" flexDir="row" gap={3}>
-                  <Icon boxSize={6} as={MdOutlineLocationOn} />
-                  <Text color="#5A5A5A">Pune,Mumbai</Text>
-                </Box>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="space-around"
-                padding="0.5rem"
-                flexDir="column"
-                height="85%"
-                bg="white"
-                borderRadius="5px"
-                border="1px solid rgba(75, 156, 149, 0.5) "
-                width="450px"
-                
-              >
-                <Text textAlign="end" width="100%">
-                  3d ago
-                </Text>
-                <Link fontSize="20px" fontWeight="600" width="400px">
-                  Machine Learning Engg
-                </Link>
-                <Link color="#5A5A5A">lecta consultansts</Link>
-                <Box display="flex" flexDir="row" gap={3}>
-                  <Icon boxSize={6} as={MdOutlineLocationOn} />
-                  <Text color="#5A5A5A">Pune,Mumbai</Text>
-                </Box>
-              </Box>
-              
-
-
+              {recommendedJobs.map((job, index) => (
+                <JobCard job={job} key={job._id} />
+              ))}
             </HStack>
           </Box>
           <Box
@@ -154,9 +217,8 @@ function Home() {
           >
             <HStack justifyContent="space-between" ml="3">
               <Heading fontWeight="500" color="#5A5A5A" fontSize="22px">
-                Top companies
+                Top Recruiters
               </Heading>
-              <Link>view all</Link>
             </HStack>
 
             <Box
@@ -183,117 +245,13 @@ function Home() {
                 },
               }}
             >
-              <Box
-                display="flex"
-                justifyContent="flex-end"
-                padding="1rem"
-                flexDir="column"
-                height="90%"
-                bg="white"
-                borderRadius="5px"
-                border="1px solid rgba(75, 156, 149, 0.5) "
-                width="450px"
-                gap="0.5rem"
-              >
-                <Text
-                  fontSize="20px"
-                  fontWeight="600"
-                  width="400px"
-                  textAlign="center"
-                >
-                  Cerner
-                </Text>
-                <Box display="flex" justifyContent="center" gap="2">
-                  <Text>3.4</Text>
-                  <span>|</span>
-                  <Text>22.2k reviews</Text>
-                </Box>
-                <Link
-                  fontSize="16px"
-                  display="flex"
-                  color="#4B9C95"
-                  fontWeight="500"
-                  justifyContent="center"
-                >
-                  View Jobs
-                </Link>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="flex-end"
-                padding="1rem"
-                flexDir="column"
-                height="90%"
-                bg="white"
-                borderRadius="5px"
-                border="1px solid rgba(75, 156, 149, 0.5) "
-                width="450px"
-                gap="0.5rem"
-              >
-                <Text
-                  fontSize="25px"
-                  fontWeight="600"
-                  width="400px"
-                  textAlign="center"
-                >
-                  Cerner
-                </Text>
-                <Box display="flex" justifyContent="center" gap="2">
-                  <Text>3.4</Text>
-                  <span>|</span>
-                  <Text>22.2k reviews</Text>
-                </Box>
-                <Link
-                  fontSize="16px"
-                  display="flex"
-                  color="#4B9C95"
-                  fontWeight="500"
-                  justifyContent="center"
-                >
-                  View Jobs
-                </Link>
-              </Box>
-              <Box
-                display="flex"
-                justifyContent="flex-end"
-                padding="1rem"
-                flexDir="column"
-                height="90%"
-                bg="white"
-                borderRadius="5px"
-                border="1px solid rgba(75, 156, 149, 0.5) "
-                width="450px"
-                gap="0.5rem"
-              >
-                <Text
-                  fontSize="25px"
-                  fontWeight="600"
-                  width="400px"
-                  textAlign="center"
-                >
-                  Cerner
-                </Text>
-                <Box display="flex" justifyContent="center" gap="2">
-                  <Text>3.4</Text>
-                  <span>|</span>
-                  <Text>22.2k reviews</Text>
-                </Box>
-                <Link
-                  fontSize="16px"
-                  display="flex"
-                  color="#4B9C95"
-                  fontWeight="500"
-                  justifyContent="center"
-                >
-                  View Jobs
-                </Link>
-              </Box>
+              {topRecruiters.map((company) => <CompanyCard company={company} key={company._id} />)}
             </Box>
           </Box>
         </Box>
       </HStack>
     </Box>
   );
-}
+};
 
 export default Home;

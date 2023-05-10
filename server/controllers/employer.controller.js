@@ -1,3 +1,4 @@
+const Applicant = require("../models/applicant");
 const Employer = require("../models/employer");
 const Job = require("../models/job");
 const User = require("../models/user");
@@ -6,6 +7,7 @@ exports.saveEmployerDetails = async (req, res) => {
   try {
     const employer = new Employer({
       userId: req.user._id,
+      name : req.user.name,
       gstNumber: req.body.gstNumber,
       companyDescription: req.body.companyDescription,
       numberOfEmployees: req.body.numberOfEmployees,
@@ -33,6 +35,28 @@ exports.getApplicants = async(req,res) => {
   }
 }
 
+exports.getApplicantDetails = async(req,res) => {
+  try{
+    const { jobId, applicantId } = req.params;
+    const job = await Job.findById(jobId);
+    if (!job) {
+      return res.status(404).send({ message: "Job not found" });
+    }
+    const applicantData = job.applicants.find(
+      (applicant) => applicant._id.toString() === applicantId
+    );
+    if (!applicantData) {
+      return res.status(404).send({ message: "Applicant not found" });
+    }
+    const userData = await Applicant.findById(applicantData);
+    return res.send({ user : userData });
+
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}
+
 exports.getPostedJobs = async(req,res) => {
   try{
     const employer = await Employer.findById(req.user.referentialId).populate('allJobs');
@@ -52,3 +76,13 @@ exports.getPostedJobs = async(req,res) => {
     res.status(500).send({ err });
   }
 }
+
+exports.getTopEmployers = async (req, res) => {
+  try {
+    const result = await Employer.find().sort({ "allJobs.length": -1 }).limit(3);
+    res.status(200).send({companies : result});
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ err });
+  }
+};

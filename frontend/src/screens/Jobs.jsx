@@ -8,9 +8,10 @@ import {
   Spacer,
   Text,
   VStack,
+  Link,
 } from "@chakra-ui/react";
-import React from "react";
-import Navbar from "../components/jobs/Navbar";
+import React, { useEffect, useState } from "react";
+import Navbar from "../components/home/Navbar";
 import {
   MdAdd,
   MdWorkOutline,
@@ -20,10 +21,137 @@ import {
   MdOutlineWatchLater,
   MdStarBorder,
 } from "react-icons/md";
+import { useAuth } from "../contexts/AuthContext";
+import axios from "../utils/axiosConfig";
+import { Link as RouterLink } from "react-router-dom";
 
-export default function Jobs() {
+function getElapsedDays(dateString) {
+  const currentDate = new Date();
+  const inputDate = new Date(dateString);
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+  const elapsedMilliseconds = currentDate - inputDate;
+  const elapsedDays = Math.floor(elapsedMilliseconds / millisecondsPerDay);
+  return elapsedDays;
+}
+
+const LocationPill = ({ location }) => {
   return (
-    <Box bg="primary" height="100vh" width="100%">
+    <Text
+      w={"max-content"}
+      color={"#FFF"}
+      bg={"#4B9C95"}
+      borderRadius={"25px"}
+      px={"10px"}
+      py={"2px"}
+      ml={"0px !important"}
+      textTransform={"capitalize"}
+    >
+      {location}
+    </Text>
+  );
+};
+
+const JobCard = ({ job }) => {
+  return (
+    <>
+      <Box>
+        <Box
+          mr="1rem"
+          display="flex"
+          bg="white"
+          flexDir="column"
+          borderRadius={"10px"}
+          px="1rem"
+          gap="0.75rem"
+          py="1.5rem"
+        >
+          <Link as={RouterLink} to={`/jobs/${job._id}`}>
+            <Text ml={"2rem"} fontSize="18px" fontWeight="600">
+              {job.jobTitle}
+            </Text>
+          </Link>
+          <Text ml="2rem" fontSize="17">
+            {job.companyName}
+          </Text>
+          <Flex ml="2rem" gap="10">
+            <Flex flexDir="row" alignItems="center" gap={2}>
+              <Icon boxSize={5} as={MdWorkOutline} />
+              <Text>{job.minWorkExperience}</Text>
+            </Flex>
+            <Flex flexDir="row" alignItems="center" gap={2}>
+              <Icon boxSize={5} as={MdCurrencyRupee} />
+              <Text>{job.salary}</Text>
+            </Flex>
+            <Flex flexDir="row" alignItems="center" gap={2}>
+              <Icon boxSize={5} as={MdOutlineLocationOn} />
+              <HStack gap={"10px"}>
+                {job.jobLocations.map((loc, index) => (
+                  <LocationPill location={loc} key={`sacdsce-${index}`} />
+                ))}
+              </HStack>
+            </Flex>
+          </Flex>
+
+          <Flex justifyContent="space-between" alignItems="center">
+            <Flex
+              borderRadius="5px"
+              bg="primary"
+              p="5px"
+              ml="2rem"
+              gap={2}
+              alignItems="center"
+            >
+              <Icon boxSize={5} as={MdOutlineWatchLater} />
+              <Text>{getElapsedDays(job.created)} days ago</Text>
+            </Flex>
+
+            <Flex gap="2rem">
+              <Flex gap={2} alignItems="center">
+                <Icon as={MdHideSource} boxSize={5} />
+                <Text>Hide</Text>
+              </Flex>
+              <Flex gap={2} alignItems="center">
+                <Icon as={MdStarBorder} boxSize={5} />
+                <Text>Save</Text>
+              </Flex>
+            </Flex>
+          </Flex>
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+const Jobs = () => {
+  const [localJobs, setLocalJobs] = useState([]);
+
+  const { token, currentUser } = useAuth();
+
+  const getJobs = async () => {
+    try {
+      const config = {
+        headers: { Authorization: `JWT ${token}` },
+      };
+      const response = await axios.post(
+        "/jobs",
+        {
+          minSalary: currentUser.minSalary,
+          preferredJobLocations: currentUser.preferredWorkLocation,
+        },
+        config
+      );
+      setLocalJobs(response.data.jobs);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getJobs();
+  }, []);
+
+  return (
+    <Box bg="primary" height="100vh" width="100%" fontFamily={"Poppins"}>
       <Box
         display="flex"
         flexDir="column"
@@ -56,7 +184,6 @@ export default function Jobs() {
           gap="1rem"
           height="75vh"
           overflowY="scroll"
-
           sx={{
             "::-webkit-scrollbar": {
               width: "5px",
@@ -69,204 +196,10 @@ export default function Jobs() {
               background: "secondary",
             },
           }}
-
-
-
         >
-          <Box>
-            {/* 1st box card */}
-            <Box
-              mr="1rem"
-              display="flex"
-              bg="white"
-              flexDir="column"
-              height="220px"
-              p="1rem"
-              gap="0.75rem"
-              pt="1.5rem"
-            >
-              <Flex gap={3}>
-                <Checkbox colorScheme="gray" size="lg" />
-                <Text fontSize="18px" fontWeight="600">
-                  Hiring for international Voice
-                </Text>
-              </Flex>
-              <Text ml="2rem" fontSize="17">
-                Intellecta consultants
-              </Text>
-              <Flex ml="2rem" gap="10">
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdWorkOutline} />
-                  <Text>0-5 years</Text>
-                </Flex>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdCurrencyRupee} />
-                  <Text>2.5-7 LPA</Text>
-                </Flex>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdOutlineLocationOn} />
-                  <Text>Pune,Mumbai</Text>
-                </Flex>
-              </Flex>
-              <Text ml="2rem">Description of the job</Text>
-
-              <Flex justifyContent="space-between" alignItems="center">
-                <Flex
-                  borderRadius="5px"
-                  bg="primary"
-                  p="5px"
-                  ml="2rem"
-                  width="12%"
-                  gap={2}
-                  alignItems="center"
-                >
-                  <Icon boxSize={5} as={MdOutlineWatchLater} />
-                  <Text>3 days ago</Text>
-                </Flex>
-
-                <Flex gap="2rem">
-                  <Flex gap={2} alignItems="center">
-                    <Icon as={MdHideSource} boxSize={5} />
-                    <Text>Hide</Text>
-                  </Flex>
-                  <Flex gap={2} alignItems="center">
-                    <Icon as={MdStarBorder} boxSize={5} />
-                    <Text>Save</Text>
-                  </Flex>
-                </Flex>
-              </Flex>
-            </Box>
-          </Box>
-
-          {/* 1st box card */}
-          <Box>
-            <Box
-              mr="1rem"
-              display="flex"
-              bg="white"
-              flexDir="column"
-              height="220px"
-              p="1rem"
-              gap="0.75rem"
-              pt="1.5rem"
-            >
-              <Flex gap={3}>
-                <Checkbox colorScheme="gray" size="lg" />
-                <Text fontSize="18px" fontWeight="600">
-                  Hiring for international Voice
-                </Text>
-              </Flex>
-              <Text ml="2rem" fontSize="17">
-                Intellecta consultants
-              </Text>
-              <Flex ml="2rem" gap="10">
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdWorkOutline} />
-                  <Text>0-5 years</Text>
-                </Flex>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdCurrencyRupee} />
-                  <Text>2.5-7 LPA</Text>
-                </Flex>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdOutlineLocationOn} />
-                  <Text>Pune,Mumbai</Text>
-                </Flex>
-              </Flex>
-              <Text ml="2rem">Description of the job</Text>
-
-              <Flex justifyContent="space-between" alignItems="center">
-                <Flex
-                  borderRadius="5px"
-                  bg="primary"
-                  p="5px"
-                  ml="2rem"
-                  width="12%"
-                  gap={2}
-                  alignItems="center"
-                >
-                  <Icon boxSize={5} as={MdOutlineWatchLater} />
-                  <Text>3 days ago</Text>
-                </Flex>
-
-                <Flex gap="2rem">
-                  <Flex gap={2} alignItems="center">
-                    <Icon as={MdHideSource} boxSize={5} />
-                    <Text>Hide</Text>
-                  </Flex>
-                  <Flex gap={2} alignItems="center">
-                    <Icon as={MdStarBorder} boxSize={5} />
-                    <Text>Save</Text>
-                  </Flex>
-                </Flex>
-              </Flex>
-            </Box>
-          </Box>
-
-          {/* 3rs box  */}
-          <Box>
-            <Box
-              mr="1rem"
-              display="flex"
-              bg="white"
-              flexDir="column"
-              height="220px"
-              p="1rem"
-              gap="0.75rem"
-              pt="1.5rem"
-            >
-              <Flex gap={3}>
-                <Checkbox colorScheme="gray" size="lg" />
-                <Text fontSize="18px" fontWeight="600">
-                  Hiring for international Voice
-                </Text>
-              </Flex>
-              <Text ml="2rem" fontSize="17">
-                Intellecta consultants
-              </Text>
-              <Flex ml="2rem" gap="10">
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdWorkOutline} />
-                  <Text>0-5 years</Text>
-                </Flex>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdCurrencyRupee} />
-                  <Text>2.5-7 LPA</Text>
-                </Flex>
-                <Flex flexDir="row" alignItems="center" gap={2}>
-                  <Icon boxSize={5} as={MdOutlineLocationOn} />
-                  <Text>Pune,Mumbai</Text>
-                </Flex>
-              </Flex>
-              <Text ml="2rem">Description of the job</Text>
-
-              <Flex justifyContent="space-between" alignItems="center">
-                <Flex
-                  borderRadius="5px"
-                  bg="primary"
-                  p="5px"
-                  ml="2rem"
-                  width="12%"
-                  gap={2}
-                  alignItems="center"
-                >
-                  <Icon boxSize={5} as={MdOutlineWatchLater} />
-                  <Text>3 days ago</Text>
-                </Flex>
-
-                <Flex gap="2rem">
-                  <Flex gap={2} alignItems="center">
-                    <Icon as={MdHideSource} boxSize={5} />
-                    <Text>Hide</Text>
-                  </Flex>
-                  <Flex gap={2} alignItems="center">
-                    <Icon as={MdStarBorder} boxSize={5} />
-                    <Text>Save</Text>
-                  </Flex>
-                </Flex>
-              </Flex>
-            </Box>
-          </Box>
+          {localJobs.map((job) => (
+            <JobCard job={job} key={job._id} />
+          ))}
         </Box>
 
         <Box
@@ -286,20 +219,27 @@ export default function Jobs() {
             {" "}
             Get Jobs Matching Your Criteria By Adding Below Prefernces
           </Text>
-          <HStack mt="3rem" fontWeight="500" color="secondary">
-            <Icon as={MdAdd} boxSize={5} />
-            <Text>Add your preferred job role</Text>
-          </HStack>
-          <HStack mt="1rem" fontWeight="500" color="secondary">
-            <Icon as={MdAdd} boxSize={5} />
-            <Text>Add your preferred job location</Text>
-          </HStack>
-          <HStack mt="1rem" fontWeight="500" color="secondary">
-            <Icon as={MdAdd} boxSize={5} />
-            <Text>Add your preferred job salary</Text>
-          </HStack>
+          <Link as={RouterLink} to={"/profile"}>
+            <HStack mt="1rem" fontWeight="500" color="secondary">
+              <Icon as={MdAdd} boxSize={5} />
+              <Text>Add your preferred job role</Text>
+            </HStack>
+          </Link>
+          <Link as={RouterLink} to={"/profile"}>
+            <HStack mt="1rem" fontWeight="500" color="secondary">
+              <Icon as={MdAdd} boxSize={5} />
+              <Text>Add your preferred job location</Text>
+            </HStack>
+          </Link>
+          <Link as={RouterLink} to={"/profile"}>
+            <HStack mt="1rem" fontWeight="500" color="secondary">
+              <Icon as={MdAdd} boxSize={5} />
+              <Text>Add your preferred job salary</Text>
+            </HStack>
+          </Link>
         </Box>
       </Box>
     </Box>
   );
-}
+};
+export default Jobs;
