@@ -27,10 +27,7 @@ import { authSchema } from "../../schemas/auth";
 import { useAuth } from "../../contexts/AuthContext";
 
 function Login({ toggleForm }) {
-  
-
-  const [viewPass, setViewPass] = useState("false");
-  const [viewIcon, setViewIcon] = useState("true");
+  const [viewPass, setViewPass] = useState(false);
 
   const { login } = useAuth();
 
@@ -125,12 +122,11 @@ function Login({ toggleForm }) {
               color={'#000'}
             />
             <InputRightElement size="sm" pb="1rem">
-              {viewIcon ? (
+              {!viewPass ? (
                 <ViewOffIcon
                   as="button"
                   onClick={() => {
                     setViewPass(!viewPass);
-                    setViewIcon(!viewIcon);
                   }}
                   _hover={{
                     cursor: "pointer",

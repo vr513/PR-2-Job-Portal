@@ -118,8 +118,8 @@ const TableRow = ({ job, getPostedJobs }) => {
   };
   return (
     <>
-      <HStack w={"100%"} onClick={() => nav(`/applicants/${job.jobId}`)} justifyContent={"space-between"} _hover={{cursor : 'pointer'}}>
-        <Box fontFamily={"Poppins"} w={"30%"} px={"1rem"}>
+      <HStack w={"100%"}  justifyContent={"space-between"} _hover={{cursor : 'pointer'}}>
+        <Box fontFamily={"Poppins"} w={"30%"} px={"1rem"} onClick={() => nav(`/applicants/${job.jobId}`)}>
           <Text fontSize={"16px"} color={"#000"} lineHeight={"36px"}>
             {job.jobTitle}
           </Text>

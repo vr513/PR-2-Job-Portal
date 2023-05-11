@@ -107,7 +107,7 @@ exports.getTopAppliedJobs = async (req, res) => {
       .sort({ applicants: -1 }) // Sort by number of applicants in descending order
       .limit(5); // Limit to top 5 jobs
 
-    res.status(200).send({jobs});
+    res.status(200).send({jobs : jobs , timestamp : Date.now()});
   } catch (err) {
     console.error(err);
     res.status(500).send({ err });
@@ -120,7 +120,7 @@ exports.getJobDetails = async(req,res) => {
     const job = await Job.findById(jobId);
     if(!job) res.status(402).send({msg : "Job not found"});
 
-    res.status(200).send({job})
+    res.status(200).send({job : job , timestamp : Date.now()})
   }catch(err){
     console.error(err);
     res.status(500).send({ err });
