@@ -21,7 +21,6 @@ git clone https://github.com/vr513/PR-2-Job-Portal
 
 `PORT=5050`
 `MONGO_URI="mongodb://127.0.0.1:27017/job-portal"`
-`JWT_SECRET="68SfzICFJSmlOBZik2i7"`
 
 4. Start the server:
 
