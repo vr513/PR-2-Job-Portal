@@ -135,7 +135,7 @@ const Jobs = () => {
       const response = await axios.post(
         "/jobs",
         {
-          minSalary: currentUser.minSalary,
+          minSalary: currentUser.minSalary ?? 0,
           preferredJobLocations: currentUser.preferredWorkLocation,
         },
         config
