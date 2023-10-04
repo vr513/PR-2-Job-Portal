@@ -13,6 +13,7 @@ import {
 import Login from "../components/auth/Login";
 import SignUp from "../components/auth/SignUp";
 import { useState } from "react";
+import AuthImg from "../assets/auth.png"
 
 export default function auth() {
   const [currentForm, setCurrentForm] = useState("signIn");
@@ -33,7 +34,7 @@ export default function auth() {
             <Img
               width="80%"
               height="70%"
-              src="https://images.pexels.com/photos/3183198/pexels-photo-3183198.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+              src={AuthImg}
             ></Img>
           </Box>
         </Box>

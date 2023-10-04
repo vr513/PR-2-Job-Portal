@@ -1,7 +1,19 @@
-import React from "react";
-import { Box, Button, HStack, Heading, Text, VStack } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import {
+  Box,
+  Button,
+  HStack,
+  Heading,
+  Link,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import Navbar from "../components/Navbar";
-
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "../utils/axiosConfig";
+import { useAuth } from "../contexts/AuthContext";
+import Loading from "../components/Loading";
+import { Link as RouterLink } from "react-router-dom";
 const LocationPill = ({ location }) => {
   return (
     <>
@@ -30,7 +42,11 @@ const ActionButton = ({ title }) => {
   );
 };
 
-const ApplicantCard = () => {
+const ApplicantCard = ({ applicant, id }) => {
+  const currentJob =
+    applicant.employmentHistory[applicant.employmentHistory.length - 1];
+  const lastEdu =
+    applicant.educationHistory[applicant.educationHistory.length - 1];
   return (
     <>
       <Box
@@ -49,15 +65,17 @@ const ApplicantCard = () => {
             >
               <Box borderRadius={"50%"} h={"3rem"} w={"3rem"} bg={"#fff"} />
             </Box>
-            <Text
-              fontFamily={"Poppins"}
-              fontSize={"30px"}
-              fontWeight={500}
-              lineHeight={"54px"}
-              color={"#FFF"}
-            >
-              Travis Rajopadhye
-            </Text>
+            <Link as={RouterLink} to={`/${id}/${applicant._id}`}>
+              <Text
+                fontFamily={"Poppins"}
+                fontSize={"30px"}
+                fontWeight={500}
+                lineHeight={"54px"}
+                color={"#FFF"}
+              >
+                {applicant.name}
+              </Text>
+            </Link>
           </HStack>
         </Box>
         <Box
@@ -75,14 +93,16 @@ const ApplicantCard = () => {
             <Text w={"30%"} fontWeight={400}>
               Current
             </Text>
-            <Text>SDE at Google</Text>
+            <Text>
+              {currentJob?.position} at {currentJob?.companyName}
+            </Text>
           </HStack>
           <HStack>
             <Text w={"30%"} fontWeight={400}>
               Education
             </Text>
             <Text>
-              BTech from Pune Institute College of Engineering, Pune 2020
+              {lastEdu?.degreeName} from {lastEdu?.collegeName}
             </Text>
           </HStack>
           <HStack>
@@ -90,10 +110,9 @@ const ApplicantCard = () => {
               Preferred Location
             </Text>
             <HStack>
-              <LocationPill location={"Pune"} />
-              <LocationPill location={"Banglore"} />
-              <LocationPill location={"Mumbai"} />
-              <LocationPill location={"Gurgaon"} />
+              {applicant.preferredWorkLocation.map((loc, index) => (
+                <LocationPill location={loc} key={`${loc}-${index}`} />
+              ))}
             </HStack>
           </HStack>
           <HStack justifyContent={"space-between"} w={"90%"} mt={"1rem"}>
@@ -108,6 +127,34 @@ const ApplicantCard = () => {
 };
 
 const JobApplicants = () => {
+  const [applicants, setApplicants] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { id } = useParams();
+
+  const { token, isLoggedIn } = useAuth();
+  const nav = useNavigate();
+
+  const getJobApplicants = async () => {
+    try {
+      const config = {
+        headers: { Authorization: `JWT ${token}` },
+      };
+      const response = await axios.get(`/jobs/${id}/applications`, config);
+      setApplicants(response.data.applications);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    getJobApplicants();
+    setLoading(false);
+  }, []);
+
+  if (!isLoggedIn) nav("/");
+
+  if (loading) return <Loading />;
+
   return (
     <>
       <Box w={"100%"} minH={"100vh"} bg={"primary"} pb={"5rem"}>
@@ -125,8 +172,13 @@ const JobApplicants = () => {
             Candidate's Profile
           </Heading>
           <VStack gap={"20px"}>
-            <ApplicantCard />
-            <ApplicantCard />
+            {applicants.map((applicant, index) => (
+              <ApplicantCard
+                id={id}
+                key={`${applicant}-${index}`}
+                applicant={applicant}
+              />
+            ))}
           </VStack>
         </Box>
       </Box>

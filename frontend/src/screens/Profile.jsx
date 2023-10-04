@@ -16,17 +16,15 @@ import {
   MdOutlineLocationOn,
   MdOutlineWorkOutline,
   MdOutlineMailOutline,
-  MdOutlineCalendarToday,
 } from "react-icons/md";
-import ResumeHeadline from "../components/profile/ResumeHeadline";
 import KeySkills from "../components/profile/KeySkills";
 import Employement from "../components/profile/Employment";
 import Education from "../components/profile/Education";
-import ItSkills from "../components/profile/ItSkills";
 import Projects from "../components/profile/Projects";
-import ProfileSummary from "../components/profile/ProfileSummary";
-import CarrerProfile from "../components/profile/CarrerProfile";
 import PersonalDetail from "../components/profile/PersonalDetails";
+import { useAuth } from "../contexts/AuthContext";
+import { Link as RouterLink } from "react-router-dom";
+import JobPreferences from "../components/profile/JobPrefs";
 
 function Profile() {
   const [resumeFile, setResumeFile] = useState(null);
@@ -34,47 +32,41 @@ function Profile() {
     setResumeFile(e.target.files[0]);
   };
 
-  const itSkillsRef = useRef(null);
-  const resumeRef = useRef(null);
-  const resumeHeadlineRef = useRef(null);
-  const keySKillsRef = useRef(null);
-  const educationRef = useRef(null);
-  const projectsRef = useRef(null);
-  const profileSummaryRef = useRef(null);
-  const carrerProfileRef = useRef(null);
-  const personalDetailsRef = useRef(null);
-  const employmentRef = useRef(null);
+  const { currentUser } = useAuth();
 
-  const itSkillsRefScroll = () =>
-    itSkillsRef.current.scrollIntoView({ behavior: "smooth" });
+  const lastEmployment =
+    currentUser?.employmentHistory[currentUser.employmentHistory.length - 1];
 
-  const resumeScroll = () =>
-    resumeRef.current.scrollIntoView({ behavior: "smooth" });
-  const resumeHeadlineRefScroll = () =>
-    resumeHeadlineRef.current.scrollIntoView({ behavior: "smooth" });
+    const customScroll = (id) => {
+      const element = document.getElementById(id);
+      element.scrollIntoView({behavior : 'smooth'})
+    }
 
-  const keySKillsRefScroll = () =>
-    keySKillsRef.current.scrollIntoView({ behavior: "smooth" });
+  const CustomLinkTo = ({ href, text }) => {
+    return (
 
-  const educationRefScroll = () =>
-    educationRef.current.scrollIntoView({ behavior: "smooth" });
-
-  const projectsRefScroll = () =>
-    projectsRef.current.scrollIntoView({ behavior: "smooth" });
-
-  const profileSummaryRefScroll = () =>
-    profileSummaryRef.current.scrollIntoView({ behavior: "smooth" });
-
-  const carrerProfileRefScroll = () =>
-    carrerProfileRef.current.scrollIntoView({ behavior: "smooth" });
-
-  const personalDetailsRefScroll = () =>
-    personalDetailsRef.current.scrollIntoView({ behavior: "smooth" });
-  const employmentRefScroll = () =>
-    employmentRef.current.scrollIntoView({ behavior: "smooth" });
+        <Flex
+          height={"9%"}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+        >
+          <Text>{text}</Text>
+          <Button bg={"none"} onClick={() => customScroll(href)} color={"secondary"}>
+            ADD
+          </Button>
+        </Flex>
+     
+    );
+  };
 
   return (
-    <Box display="flex" height="100vh" flexDir="column" bg="primary">
+    <Box
+      display="flex"
+      height="100vh"
+      flexDir="column"
+      bg="primary"
+      fontFamily={"Poppins"}
+    >
       <Box
         position="fixed"
         top="0px"
@@ -90,7 +82,7 @@ function Profile() {
       >
         <Avatar boxSize="8rem" bg="#353535" alignSelf={"center"} />
         <Box display={"flex"} flexDir={"column"} width={"50vw"} gap={"0.75rem"}>
-          <Text fontSize={"22px"}>Pratap Rajput</Text>
+          <Text fontSize={"22px"}>{currentUser?.name}</Text>
 
           <HStack fontSize={"16px"}>
             <Box
@@ -100,7 +92,7 @@ function Profile() {
               gap={"1rem"}
             >
               <Icon boxSize={5} as={MdOutlineLocationOn} />
-              Pune,India
+              {currentUser?.currentLocation}
             </Box>
             <Box
               display={"flex"}
@@ -109,20 +101,24 @@ function Profile() {
               gap={"1rem"}
             >
               <Icon boxSize={5} as={MdOutlinePhone} />
-              +91591240914
+              <Link as={RouterLink} to={`tel:+91${currentUser?.contactNumber}`}>
+                +91 {currentUser?.contactNumber}
+              </Link>
             </Box>
           </HStack>
 
           <HStack fontSize={"16px"}>
-            <Box
-              display={"flex"}
-              width={"50%"}
-              alignItems={"center"}
-              gap={"1rem"}
-            >
-              <Icon boxSize={5} as={MdOutlineWorkOutline} />
-              Fresher
-            </Box>
+            {lastEmployment && (
+              <Box
+                display={"flex"}
+                width={"50%"}
+                alignItems={"center"}
+                gap={"1rem"}
+              >
+                <Icon boxSize={5} as={MdOutlineWorkOutline} />
+                {lastEmployment.position} at {lastEmployment.companyName}
+              </Box>
+            )}
             <Box
               display={"flex"}
               width={"50%"}
@@ -130,7 +126,12 @@ function Profile() {
               gap={"1rem"}
             >
               <Icon boxSize={5} as={MdOutlineMailOutline} />
-              pratp.rajput7676@gmail.com
+              <Link
+                as={RouterLink}
+                to={`mailto:${currentUser?.alternateEmail}`}
+              >
+                {currentUser?.alternateEmail}
+              </Link>
             </Box>
           </HStack>
           <HStack fontSize={"16px"}>
@@ -140,8 +141,10 @@ function Profile() {
               alignItems={"center"}
               gap={"1rem"}
             >
-              <Icon boxSize={5} as={MdOutlineCalendarToday} />
-              Add Avail to join
+              <Icon boxSize={5} as={MdOutlineMailOutline} />
+              <Link as={RouterLink} to={`mailto:${currentUser?.email}`}>
+                {currentUser?.email}
+              </Link>
             </Box>
           </HStack>
         </Box>
@@ -188,140 +191,19 @@ function Profile() {
           <Flex
             alignSelf={"center"}
             mt={"0.5rem"}
-            mb={"0.5rem"}
+            mb={"1.5rem"}
             width={"100%"}
             border={"1px"}
             borderColor={"#DEDEDE"}
           ></Flex>
 
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Upload Resume</Text>
-            <Button bg={"none"} color={"secondary"} onClick={resumeRef}>
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Resume Headline</Text>
-            <Button
-              bg={"none"}
-              color={"secondary"}
-              onClick={resumeHeadlineRefScroll}
-            >
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Key SKills</Text>
-            <Button
-              bg={"none"}
-              color={"secondary"}
-              onClick={keySKillsRefScroll}
-            >
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Employement</Text>
-            <Button
-              bg={"none"}
-              color={"secondary"}
-              onClick={employmentRefScroll}
-            >
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Education</Text>
-            <Button
-              bg={"none"}
-              color={"secondary"}
-              onClick={educationRefScroll}
-            >
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>IT Skills</Text>
-            <Button bg={"none"} color={"secondary"} onClick={itSkillsRefScroll}>
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Projects</Text>
-            <Button bg={"none"} color={"secondary"} onClick={projectsRefScroll}>
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Profile Summary</Text>
-            <Button
-              bg={"none"}
-              color={"secondary"}
-              onClick={profileSummaryRefScroll}
-            >
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Carrer Profile</Text>
-            <Button
-              bg={"none"}
-              color={"secondary"}
-              onClick={carrerProfileRefScroll}
-            >
-              ADD
-            </Button>
-          </Flex>
-          <Flex
-            height={"9%"}
-            alignItems={"center"}
-            justifyContent={"space-between"}
-          >
-            <Text>Personal Details</Text>
-            <Button
-              bg={"none"}
-              color={"secondary"}
-              onClick={personalDetailsRefScroll}
-            >
-              ADD
-            </Button>
-          </Flex>
+          <CustomLinkTo href={"upload-resume"} text={"Upload Resume"} />
+          <CustomLinkTo href={"key-skills"} text={"Key Skills"} />
+          <CustomLinkTo href={"employment"} text={"Employment"} />
+          <CustomLinkTo href={"education"} text={"Education"} />
+          <CustomLinkTo href={"projects"} text={"Projects"} />
+          <CustomLinkTo href={"personal-details"} text={"Personal Details"} />
+          <CustomLinkTo href={'job-preferences'} text={'Job Preferences'} />
         </Box>
         <Box
           display={"flex"}
@@ -345,7 +227,7 @@ function Profile() {
           }}
         >
           {/* Resume */}
-          <Box width={"100%"} bg={"white"} borderRadius={"5px"}>
+          <Box width={"100%"} bg={"white"} borderRadius={"5px"} id="upload-resume">
             <Flex
               flexDir={"column"}
               gap={"0.25rem"}
@@ -405,16 +287,12 @@ function Profile() {
             </Flex>
           </Box>
 
-          <ResumeHeadline ref={resumeHeadlineRef} />
-          <KeySkills ref={keySKillsRef} />
-          <Employement ref={employmentRef} />
-          <Education ref={educationRef} />
-          <ItSkills  ref={itSkillsRef}/>
-          <Projects ref={projectsRef} />
-          <ProfileSummary ref={profileSummaryRef} />
-          <CarrerProfile ref={carrerProfileRef} />
-          <PersonalDetail ref={personalDetailsRef} />
-
+          <KeySkills />
+          <Employement />
+          <Education />
+          <Projects />
+          <PersonalDetail />
+          <JobPreferences />
         </Box>
       </Box>
     </Box>

@@ -8,6 +8,10 @@ const employerSchema = new Schema({
     unique: [true, "index key already exists in database!"],
     index : true
   },
+  name : {
+    type: String,
+    required: [true, "Name not provided"],
+  },
   gstNumber: {
     type: String,
     required: [true, "GST number not provided"],

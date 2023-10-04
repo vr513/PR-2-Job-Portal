@@ -17,6 +17,7 @@ const verifyToken = async (req, res, next) => {
         res.status(401).send({ err: "Invalid authentication token" });
         return;
       } else {
+        //we are adding the user info to the req object and from this middleware:
         req.user = user;
         next();
       }

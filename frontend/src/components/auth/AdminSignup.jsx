@@ -31,8 +31,9 @@ import { Formik, useFormik } from "formik";
 import { authSchema } from "../../schemas/auth";
 import { motion } from "framer-motion";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
-export default function SignUp({ toggleForm }) {
+export default function AdminSignup({ toggleForm }) {
   const [viewPass, setViewPass] = useState(false);
   const [viewIcon, setViewIcon] = useState(false);
   const [alertStatus, setAlertStatus] = useState("success");
@@ -40,6 +41,7 @@ export default function SignUp({ toggleForm }) {
   const [alertTitle, setAlertTitle] = useState("Temp");
 
   const { signup } = useAuth();
+  const navigate = useNavigate();
 
   const submitForm = async (formik) => {
     setShowAlert(false);
@@ -59,9 +61,9 @@ export default function SignUp({ toggleForm }) {
         setAlertTitle(res.data.message);
       }
       setShowAlert(true);
+      navigate("/");
     } catch (err) {
       setAlertStatus("error");
-
       console.log(err);
     }
   };
@@ -72,7 +74,7 @@ export default function SignUp({ toggleForm }) {
       name: "",
       password: "",
       confirmPassword: "",
-      role: "applicant",
+      role: "admin",
     },
 
     onSubmit: (values, action) => {
@@ -219,102 +221,7 @@ export default function SignUp({ toggleForm }) {
           </InputGroup>
           <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
         </FormControl>
-
-        {/* <FormControl
-          isInvalid={
-            formik.errors.confirmPassword && formik.touched.confirmPassword
-          }
-          mt="30px"
-        >
-          <FormLabel
-            color="#666666"
-            fontFamily="Poppins"
-            fontWeight="400"
-            fontSize="16px"
-            lineHeight="20px"
-          >
-            Confirm Password{" "}
-          </FormLabel>
-          <InputGroup>
-            <Input
-              type={viewPass ? "text" : "password"}
-              name="confirmPassword"
-              variant="flushed"
-              borderColor="#666666"
-              focusBorderColor="black"
-              height="2rem"
-              fontSize="18px"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            <InputRightElement size="sm" pb="1rem">
-              {viewIcon ? (
-                <ViewOffIcon
-                  as="button"
-                  onClick={() => {
-                    setViewPass(!viewPass);
-                    setViewIcon(!viewIcon);
-                  }}
-                  _hover={{
-                    cursor: "pointer",
-                  }}
-                  boxSize="25"
-                  color="black"
-                />
-              ) : (
-                <ViewIcon
-                  as="button"
-                  onClick={() => {
-                    setViewPass(!viewPass);
-                    setViewIcon(!viewIcon);
-                  }}
-                  _hover={{
-                    cursor: "pointer",
-                  }}
-                  boxSize="25"
-                  color="black"
-                />
-              )}
-            </InputRightElement>
-          </InputGroup>
-          <FormErrorMessage>{formik.errors.confirmPassword}</FormErrorMessage>
-        </FormControl> */}
       </Box>
-      {/* <RadioGroup defaultValue="2">
-        <Stack spacing={5} direction="row">
-          <Radio colorScheme="green" value="1">
-            I'm An Employee
-          </Radio>
-          <Radio colorScheme="blue" value="2">
-            I'm An Employer
-          </Radio>
-        </Stack>
-      </RadioGroup> */}
-      <RadioGroup
-        value={formik.values.role}
-        onChange={(value) => formik.setFieldValue("role", value)}
-      >
-        <Stack spacing={5} direction="row">
-          <Radio
-            name="role"
-            colorScheme="green"
-            value="applicant"
-            checked={formik.values.role === "applicant"}
-          >
-            I'm An Applicant
-          </Radio>
-          <Radio
-            name="role"
-            colorScheme="blue"
-            value="employer"
-            checked={formik.values.role === "employer"}
-          >
-            I'm An Employer
-          </Radio>
-        </Stack>
-      </RadioGroup>
-
       <Button
         bg="black"
         height="57px"
@@ -328,7 +235,7 @@ export default function SignUp({ toggleForm }) {
         borderRadius="8px"
         _hover={{ bg: "green.700" }}
       >
-        Sign Up
+        Register as Admin
       </Button>
     </Box>
   );

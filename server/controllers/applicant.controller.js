@@ -128,6 +128,28 @@ exports.updateKeySkills = async (req, res) => {
   }
 };
 
+exports.addNewProject = async(req,res) => {
+  try{
+    const newProject = {
+      projectName : req.body.projectName,
+      projectDescription : req.body.projectDescription,
+      githubUrl : req.body.githubUrl,
+      deploymentUrl : req.body.deploymentUrl
+    }
+    const response = await Applicant.findOneAndUpdate(
+      { userId: req.user._id },
+      {$push : {projects : newProject}},
+      {new : true}
+    ).exec();
+    if (!response) {
+      return res.status(404).send({ msg: "Invalid Arguments" });
+    }
+    return res.status(200).send({ msg: "success" , user : response });
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}
 
 exports.addNewEmployment = async (req, res) => {
   try {
@@ -141,12 +163,13 @@ exports.addNewEmployment = async (req, res) => {
     };
     const response1 = await Applicant.findOneAndUpdate(
       { userId: req.user._id },
-      { $push: { employmentHistory: newWorkExp } }
+      { $push: { employmentHistory: newWorkExp } },
+      { new: true }
     ).exec();
     if (!response1) {
       return res.status(404).send({ msg: "Invalid Arguments" });
     }
-    return res.status(200).send({ msg: "success" });
+    return res.status(200).send({ msg: "success" , user : response1 });
   } catch (err) {
     console.error(err);
     res.status(500).send({ err });
@@ -219,12 +242,13 @@ exports.addNewEducation = async (req, res) => {
     };
     const response = await Applicant.findOneAndUpdate(
       { userId: req.user._id },
-      { $push: { educationHistory: newEducation } }
+      { $push: { educationHistory: newEducation } },
+      { new: true }
     ).exec();
     if (!response) {
       return res.status(404).send({ msg: "Education record not found" });
     }
-    res.status(200).send({ msg: "Education record added successfully" });
+    res.status(200).send({ msg: "Education record added successfully" , user : response });
   } catch (err) {
     console.error(err);
     res.status(500).send({ err });
@@ -303,5 +327,53 @@ exports.getApplicantData = async(req,res) => {
   }catch(err){
     console.error(err);
     res.status(500).send({ err });
+  }
+}
+
+exports.savePersonalDetails = async(req, res) => {
+  try {
+    const { address, alternateEmail, dateOfBirth, contactNumber, gender, currentLocation } = req.body;
+    const user = await Applicant.findById(req.user.referentialId);
+
+    if (address) user.address = address;
+    if(currentLocation) user.currentLocation = currentLocation;
+    if (alternateEmail) user.alternateEmail = alternateEmail;
+    if (dateOfBirth) user.dateOfBirth = dateOfBirth;
+    if (contactNumber) user.contactNumber = contactNumber;
+    if (gender) user.gender = gender;
+
+    await user.save();
+    res.status(200).send({ message: "Personal details updated successfully!", user : user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ err });
+  }
+};
+
+exports.saveJobPreferences = async(req,res) => {
+  try{
+    const {preferredWorkLocation , minSalary} = req.body;
+    const user = await Applicant.findById(req.user.referentialId);
+
+    if(preferredWorkLocation) user.preferredWorkLocation = preferredWorkLocation;
+    if(minSalary) user.minSalary = minSalary;
+    await user.save();
+    res.status(200).send({ message: "Personal details updated successfully!", user : user });
+  }catch(err){
+    console.error(err);
+    res.status(500).send({ err });
+  }
+}
+
+exports.applicantExists = async(req,res) =>{
+  try{
+    const applicant = await Applicant.findById(req.user.referentialId);
+    if(applicant){
+      return res.status(200).json({message:'Applicant exists',applicant});
+    }else{
+      return res.status(404).json({menubar:'Applicant doesnt exist'})
+    }
+  }catch(err){
+    res.status(500).json({err:'server error'})
   }
 }

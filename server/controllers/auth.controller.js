@@ -20,7 +20,9 @@ exports.signup = async (req, res) => {
     });
   } catch (err) {
     console.error(err);
-    res.status(400).send({ err: "Incomplete fields detected" });
+    res
+      .status(400)
+      .send({ err: "Please try again with complete fields or diffrent email" });
   }
 };
 
@@ -46,17 +48,19 @@ exports.signin = async (req, res) => {
           expiresIn: "5d",
         });
         let response;
-        if(user.role === "applicant") response = await Applicant.findById(user.referentialId);
-        else if(user.role === "employer") response = await Employer.findById(user.referentialId);
+        if (user.role === "applicant")
+          response = await Applicant.findById(user.referentialId);
+        else if (user.role === "employer")
+          response = await Employer.findById(user.referentialId);
         else {
           response = {
             id: user._id,
             email: user.email,
-          }
+          };
         }
         res.status(200).send({
-          userData : response,
-          userRole : user.role,
+          userData: response,
+          userRole: user.role,
           message: "Login successfull",
           accessToken: token,
         });
