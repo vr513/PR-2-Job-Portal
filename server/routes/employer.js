@@ -4,7 +4,7 @@ const router = express.Router();
 const verifyToken = require("../middlewares/authJWT");
 const {employerCheck ,verifiedEmployerCheck} = require("../middlewares/roleCheck");
 
-const {saveEmployerDetails, getPostedJobs, getApplicantDetails} = require('../controllers/employer.controller');
+const {saveEmployerDetails, getPostedJobs, getApplicantDetails, employerExists} = require('../controllers/employer.controller');
 const {createNewJob , updateJobStatus, viewJobApplications} = require('../controllers/jobs.controller');
 
 router.post('/save-employer-details',verifyToken,employerCheck,saveEmployerDetails);
@@ -19,4 +19,5 @@ router.get('/employer/jobs',verifyToken,verifiedEmployerCheck,getPostedJobs);
 
 router.get('/applicant/:jobId/:applicantId',verifyToken,verifiedEmployerCheck,getApplicantDetails);
 
+router.get('/checkEmployerExists',verifyToken,employerCheck,employerExists);
 module.exports = router;

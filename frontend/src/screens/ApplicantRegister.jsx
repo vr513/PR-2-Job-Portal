@@ -18,12 +18,12 @@ import { Form } from "formik";
 import React, { useState } from "react";
 import { Formik, useFormik } from "formik";
 import banner1 from "../assets/registerBanner_1.png";
-import { regSchema } from "../schemas/reg";
+import { regSchema } from "../schemas/regApp";
 import axios from "../utils/axiosConfig";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-function Register() {
+function ApplicantRegister() {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileInput = (e) => {
@@ -36,18 +36,16 @@ function Register() {
     try {
       const config = { headers: { Authorization: `JWT ${token}` } };
       const res = await axios.post(
-        "/save-employer-details",
+        "/create-applicant",
         {
-          gstNumber: formik.values.gstNumber,
+          gender: formik.values.gender,
           contactNumber: formik.values.contactNumber,
-          companyDescription: formik.values.companyDescription,
-          numberOfEmployees: formik.values.numberOfEmployees,
-          companyHeadquarters: formik.values.companyHeadquarters,
+          currentLocation: formik.values.currentLocation,
         },
         config
       );
       console.log(res);
-      navigate("./employerDashboard");
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
@@ -55,11 +53,9 @@ function Register() {
 
   const formik = useFormik({
     initialValues: {
-      gstNumber: "",
+      gender: "",
       contactNumber: "",
-      companyDescription: "",
-      numberOfEmployees: "",
-      companyHeadquarters: "",
+      currentLocation: "",
     },
 
     validationSchema: regSchema,
@@ -141,10 +137,10 @@ function Register() {
               marginTop="2rem"
               marginBottom="0.5rem"
             >
-              Register
+              Register as an applicant
             </Heading>
             <>
-              //this is the form:
+              {/* this is the form for applicant: */}
               <Box
                 as="form"
                 onSubmit={formik.handleSubmit}
@@ -152,19 +148,18 @@ function Register() {
                 flexDirection="column"
                 gap="10px"
               >
+                {/* gender field */}
                 <FormControl
-                  isInvalid={
-                    formik.errors.gstNumber && formik.touched.gstNumber
-                  }
+                  isInvalid={formik.errors.gender && formik.touched.gender}
                 >
                   <HStack
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <FormLabel sx={labelStyles}>GST Number</FormLabel>
+                    <FormLabel sx={labelStyles}>Gender</FormLabel>
                     <FormErrorMessage fontSize="14px">
-                      {formik.errors.gstNumber}
+                      {formik.errors.gender}
                     </FormErrorMessage>
                   </HStack>
                   <Input
@@ -172,12 +167,14 @@ function Register() {
                     sx={inputStyles}
                     variant="flushed"
                     focusBorderColor="black"
-                    name="gstNumber"
-                    value={formik.values.gstNumber}
+                    name="gender"
+                    value={formik.values.gender}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
                 </FormControl>
+
+                {/* conatatc number field */}
                 <FormControl
                   isInvalid={
                     formik.errors.contactNumber && formik.touched.contactNumber
@@ -205,10 +202,12 @@ function Register() {
                     onBlur={formik.handleBlur}
                   />
                 </FormControl>
+
+                {/* currentLocation */}
                 <FormControl
                   isInvalid={
-                    formik.errors.companyDescription &&
-                    formik.touched.companyDescription
+                    formik.errors.currentLocation &&
+                    formik.touched.currentLocation
                   }
                 >
                   <HStack
@@ -216,9 +215,9 @@ function Register() {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <FormLabel sx={labelStyles}>Company Description</FormLabel>
+                    <FormLabel sx={labelStyles}>Current city</FormLabel>
                     <FormErrorMessage fontSize="14px">
-                      {formik.errors.companyDescription}
+                      {formik.errors.currentLocation}
                     </FormErrorMessage>
                   </HStack>
 
@@ -227,95 +226,40 @@ function Register() {
                     sx={inputStyles}
                     variant="flushed"
                     focusBorderColor="black"
-                    name="companyDescription"
-                    value={formik.values.companyDescription}
+                    name="currentLocation"
+                    value={formik.values.currentLocation}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
                   />
                 </FormControl>
-                <FormControl
-                  isInvalid={
-                    formik.errors.numberOfEmployees &&
-                    formik.touched.numberOfEmployees
-                  }
-                >
-                  <HStack
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <FormLabel sx={labelStyles}>No. of Employees </FormLabel>
-                    <FormErrorMessage fontSize="14px">
-                      {formik.errors.numberOfEmployees}
-                    </FormErrorMessage>
-                  </HStack>
-
-                  <Input
-                    type="number"
-                    sx={inputStyles}
-                    variant="flushed"
-                    focusBorderColor="black"
-                    name="numberOfEmployees"
-                    value={formik.values.numberOfEmployees}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </FormControl>
-                <FormControl
-                  isInvalid={
-                    formik.errors.companyHeadquarters &&
-                    formik.touched.companyHeadquarters
-                  }
-                >
-                  <HStack
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <FormLabel sx={labelStyles}>City </FormLabel>
-                    <FormErrorMessage fontSize="14px">
-                      {formik.errors.companyHeadquarters}
-                    </FormErrorMessage>
-                  </HStack>
-
-                  <Input
-                    type="text"
-                    sx={inputStyles}
-                    variant="flushed"
-                    focusBorderColor="black"
-                    name="companyHeadquarters"
-                    value={formik.values.companyHeadquarters}
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                  />
-                </FormControl>
-                <FormControl>
-                  <FormLabel sx={labelStyles} mt="10px" pb={2}>
-                    Profile Picture
-                  </FormLabel>
-                  <Box>
-                    <HStack bgColor="#1C2438" borderRadius="23px" width="100%">
-                      <Box as="label" sx={uploadStyles}>
-                        <Input
-                          display="none"
-                          overflow="hidden"
-                          type="file"
-                          accept="image/*"
-                          multiple={false}
-                          onChange={handleFileInput}
-                        />
-                        <span>Upload Image</span>
-                      </Box>
-                      <Box sx={uploadLabelStyles}>
-                        {selectedFile ? (
-                          <span>{selectedFile.name}</span>
-                        ) : (
-                          <span>JPEG,JPEG,PNG|Max:2MB</span>
-                        )}
-                      </Box>
-                    </HStack>
-                  </Box>
-                </FormControl>
+                {/* 
+                  <FormControl>
+                    <FormLabel sx={labelStyles} mt="10px" pb={2}>
+                      Profile Picture
+                    </FormLabel>
+                    <Box>
+                      <HStack bgColor="#1C2438" borderRadius="23px" width="100%">
+                        <Box as="label" sx={uploadStyles}>
+                          <Input
+                            display="none"
+                            overflow="hidden"
+                            type="file"
+                            accept="image/*"
+                            multiple={false}
+                            onChange={handleFileInput}
+                          />
+                          <span>Upload Image</span>
+                        </Box>
+                        <Box sx={uploadLabelStyles}>
+                          {selectedFile ? (
+                            <span>{selectedFile.name}</span>
+                          ) : (
+                            <span>JPEG,JPEG,PNG|Max:2MB</span>
+                          )}
+                        </Box>
+                      </HStack>
+                    </Box>
+                  </FormControl> */}
 
                 <Box
                   fontSize="14px"
@@ -380,4 +324,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default ApplicantRegister;

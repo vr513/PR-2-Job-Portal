@@ -241,7 +241,7 @@ const EmployerDashboard = () => {
       const response = await axios.get("/employer/jobs", config);
       setJobs(response.data.jobs);
     } catch (err) {
-      console.error(err);
+      // console.error(err);
     }
   };
 

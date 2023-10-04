@@ -82,10 +82,17 @@ const EmployerTableRow = ({ employer, index, getAllEmployers }) => {
   return (
     <>
       <Tr>
+
+
         <Td textTransform={"capitalize"}>
           {index}. {employer.name}
         </Td>
-        <Td>{generateRandomString(15)}</Td>
+
+
+        <Td>
+          {/* {generateRandomString(15)} */}
+          {employer.gstNumber}
+        </Td>
         <Td
           display="flex"
           justifyContent="space-between"
@@ -135,7 +142,7 @@ const AdminDashboard = () => {
       const config = {
         headers: { Authorization: `JWT ${token}` },
       };
-      res = await axios.get("/all-employers", config);
+      res = await axios.get("/all-employers-details", config);
       console.log(res);
       setEmployers(res.data.results);
     } catch (err) {

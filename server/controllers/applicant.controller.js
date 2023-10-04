@@ -364,3 +364,16 @@ exports.saveJobPreferences = async(req,res) => {
     res.status(500).send({ err });
   }
 }
+
+exports.applicantExists = async(req,res) =>{
+  try{
+    const applicant = await Applicant.findById(req.user.referentialId);
+    if(applicant){
+      return res.status(200).json({message:'Applicant exists',applicant});
+    }else{
+      return res.status(404).json({menubar:'Applicant doesnt exist'})
+    }
+  }catch(err){
+    res.status(500).json({err:'server error'})
+  }
+}

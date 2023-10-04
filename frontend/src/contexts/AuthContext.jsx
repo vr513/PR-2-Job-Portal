@@ -11,25 +11,68 @@ const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [refreshTokenLoading , setRefreshTokenLoading] = useState(true);
-  const [refetchDataLoading , setRefetchDataLoading] = useState(true);
+  const [refreshTokenLoading, setRefreshTokenLoading] = useState(true);
+  const [refetchDataLoading, setRefetchDataLoading] = useState(true);
+  const [exists, setExists] = useState(false);
 
   const login = async (targetEmail, targetPassword) => {
+    console.log(exists);
+
     let res;
     try {
       res = await axios.post("/login", {
         email: targetEmail,
         password: targetPassword,
       });
+
       console.log(res);
+
       if (res.status === 200) {
         setToken(res.data.accessToken);
         setCurrentUser(res.data.userData);
         setIsLoggedIn(true);
         setRole(res.data.userRole);
         localStorage.setItem("token", token);
-    localStorage.setItem("currentUser", JSON.stringify(currentUser));
-    localStorage.setItem("role", role);
+        localStorage.setItem("currentUser", JSON.stringify(currentUser));
+        localStorage.setItem("role", role);
+
+        console.log("trying");
+        console.log(res.data.userRole);
+
+        if (res.data.userRole === "employer") {
+          try {
+            const empRes = await axios.get("/checkEmployerExists");
+            console.log("lets wait");
+            if (empRes.status === 200) {
+              setExists(true);
+            }
+            console.log(empRes);
+          } catch (err) {
+            console.log("error checking employer", err);
+          }
+        }
+
+        if (res.data.userRole === "applicant") {
+          console.log("here");
+          try {
+            console.log("lets wait");
+            
+            const config = {
+              headers: { Authorization: `JWT ${res.data.accessToken}` },
+            };
+            const appRes = await axios.get(
+              "/checkApplicantExists",config
+            );
+            if (appRes.status === 200) {
+              setExists(true);
+            }
+            console.log(empRes);
+          } catch (err) {
+            console.log("error checking applicant", err);
+          }
+        }
+
+        console.log(exists);
         return res;
       } else return res;
     } catch (err) {
@@ -61,8 +104,13 @@ const AuthProvider = ({ children }) => {
   const refreshToken = async () => {
     const token2 = localStorage.getItem("token");
     const role2 = localStorage.getItem("role");
-    const currentUser2 = localStorage.getItem('currentUser');
-    if (currentUser2 === null || currentUser2 === undefined || role2 === null || role2 === undefined) {
+    const currentUser2 = localStorage.getItem("currentUser");
+    if (
+      currentUser2 === null ||
+      currentUser2 === undefined ||
+      role2 === null ||
+      role2 === undefined
+    ) {
       logout();
       setRefreshTokenLoading(false);
       return;
@@ -78,7 +126,7 @@ const AuthProvider = ({ children }) => {
         setRole(role2);
         setIsLoggedIn(true);
         setRefreshTokenLoading(false);
-        
+
         return;
       } catch (err) {
         setRefreshTokenLoading(false);
@@ -91,41 +139,41 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const refetchUserData = async() => {
-    try{
+  const refetchUserData = async () => {
+    try {
       const config = {
-        headers: { Authorization: `JWT ${localStorage.getItem('token')}` },
+        headers: { Authorization: `JWT ${localStorage.getItem("token")}` },
       };
-      const response = await axios.get('refetch-user-data',config);
+      const response = await axios.get("refetch-user-data", config);
       setCurrentUser(response.data.userData);
       setRefetchDataLoading(false);
-    }catch(err){
+    } catch (err) {
       console.error(err);
       setRefetchDataLoading(false);
     }
-  }
+  };
 
   const saveSessionData = () => {
     localStorage.setItem("token", token);
     localStorage.setItem("currentUser", JSON.stringify(currentUser));
     localStorage.setItem("role", role);
-  }
- 
+  };
+
   useEffect(() => {
     refreshToken();
     refetchUserData();
   }, []);
 
-  window.addEventListener('unload', saveSessionData);
+  window.addEventListener("unload", saveSessionData);
 
   const logout = () => {
-    setToken(null)
+    setToken(null);
     setCurrentUser(null);
     setIsLoggedIn(false);
     setRole(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('role');
+    localStorage.removeItem("token");
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("role");
     return true;
   };
 
@@ -138,9 +186,10 @@ const AuthProvider = ({ children }) => {
     logout,
     signup,
     refetchUserData,
-    setCurrentUser
+    setCurrentUser,
+    exists,
   };
- 
+
   return (
     <AuthContext.Provider value={value}>
       {!refetchDataLoading && !refreshTokenLoading && children}

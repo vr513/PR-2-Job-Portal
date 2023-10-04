@@ -22,6 +22,7 @@ const {
   addNewProject,
   savePersonalDetails,
   saveJobPreferences,
+  applicantExists,
 } = require("../controllers/applicant.controller");
 const { applyToJob, getJobs, getTopAppliedJobs, getJobDetails } = require("../controllers/jobs.controller");
 const {getTopEmployers} = require('../controllers/employer.controller');
@@ -99,4 +100,5 @@ router.post(
 router.get('/recommended-jobs',verifyToken,applicantCheck,getTopAppliedJobs);
 router.get('/top-recruiters',verifyToken,applicantCheck,getTopEmployers);
 router.get('/job/:jobId',verifyToken,applicantCheck,getJobDetails);
+router.get('/checkApplicantExists',verifyToken,applicantCheck,applicantExists);
 module.exports = router;

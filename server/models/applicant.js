@@ -19,6 +19,7 @@ const applicantSchema = new Schema({
   },
   dateOfBirth: {
     type: Date,
+    default:Date.now,
     required: [true, "Date of Birth not provided"],
   },
   address: {
@@ -230,6 +231,7 @@ const applicantSchema = new Schema({
   },
   minSalary : {
     type : Number,
+    default:0,
     required : [true , "Expected Salary not mentioned"]
   }
 },{toJSON : {virtuals : true}});
